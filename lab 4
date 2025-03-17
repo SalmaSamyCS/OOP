@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Shape {
+protected:
+    string name;
+    string color;
+
+public:
+    Shape(string shapeName, string shapeColor) : name(shapeName), color(shapeColor) {}
+
+    virtual void display() const {
+        cout << "Shape Name: " << name << endl;
+        cout << "Color: " << color << endl;
+    }
+
+    virtual ~Shape() {}
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(string shapeName, string shapeColor, double r) 
+        : Shape(shapeName, shapeColor), radius(r) {}
+
+    void display() const override {
+        cout << "Shape Type: Circle" << endl;
+        cout << "Name: " << name << endl;
+        cout << "Color: " << color << endl;
+        cout << "Radius: " << radius << endl;
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double length;
+    double width;
+
+public:
+    Rectangle(string shapeName, string shapeColor, double l, double w)
+        : Shape(shapeName, shapeColor), length(l), width(w) {}
+
+    void display() const override {
+        cout << "Shape Type: Rectangle" << endl;
+        cout << "Name: " << name << endl;
+        cout << "Color: " << color << endl;
+        cout << "Length: " << length << endl;
+        cout << "Width: " << width << endl;
+    }
+};
+
+int main() {
+    Circle myCircle("MyCircle", "Red", 5.5);
+    Rectangle myRectangle("MyRectangle", "Blue", 10.0, 4.0);
+
+    cout << "Circle Info " << endl;
+    myCircle.display();
+    cout << endl;
+
+    cout << " Rectangle Info " << endl;
+    myRectangle.display();
+
+    return 0;
+}
+
+
