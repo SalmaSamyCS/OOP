@@ -1,0 +1,158 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Student {
+private:
+    string name;
+    int age;
+    double gpa;
+
+public:
+    // Default constructor
+    Student() : name(""), age(0), gpa(0.0) {
+        cout << "Default constructor called." << endl;
+    }
+
+    // Parameterized constructor
+    Student(string studentName, int studentAge, double studentGPA)
+        : name(studentName), age(studentAge), gpa(studentGPA) {
+        cout << "Parameterized constructor called." << endl;
+    }
+
+    // Destructor
+    ~Student() {
+        cout << "Destructor called for student: " << name << endl;
+    }
+
+    // Setter methods
+    void setName(const string& newName) {
+        name = newName;
+    }
+
+    void setAge(int newAge) {
+        age = newAge;
+    }
+
+    void setGPA(double newGPA) {
+        gpa = newGPA;
+    }
+
+    // Getter methods
+    string getName() const {
+        return name;
+    }
+
+    int getAge() const {
+        return age;
+    }
+
+    double getGPA() const {
+        return gpa;
+    }
+
+    // Member function to indicate studying
+    void study() const {
+        cout << name << " is studying." << endl;
+    }
+
+    // Member function to display student info
+    void displayInfo() const {
+        cout << "Student Name: " << name << endl;
+        cout << "Age: " << age << endl;
+        cout << "GPA: " << gpa << endl;
+    }
+};
+
+int main() {
+    Student* studentPtr = nullptr;
+    int choice;
+
+    do {
+        cout << "\n--- Student Management Menu ---" << endl;
+        cout << "1. Create Student (Parameterized Constructor)" << endl;
+        cout << "2. Display Student Info" << endl;
+        cout << "3. Make Student Study" << endl;
+        cout << "4. Exit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        cin.ignore(); // Clear newline character from input buffer
+
+        switch (choice) {
+            case 1: {
+                string name;
+                int age;
+                double gpa;
+
+                cout << "Enter student name: ";
+                getline(cin, name);
+                cout << "Enter age: ";
+                cin >> age;
+                cout << "Enter GPA: ";
+                cin >> gpa;
+
+                delete studentPtr; // Delete previous object if exists
+                studentPtr = new Student(name, age, gpa);
+                break;
+            }
+
+            case 2:
+                if (studentPtr != nullptr) {
+                    studentPtr->displayInfo();
+                } else {
+                    cout << "No student created yet." << endl;
+                }
+                break;
+
+            case 3:
+                if (studentPtr != nullptr) {
+                    studentPtr->study();
+                } else {
+                    cout << "No student created yet." << endl;
+                }
+                break;
+
+            case 4:
+                cout << "Exiting program..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice. Try again." << endl;
+        }
+
+    } while (choice != 4);
+
+    delete studentPtr; // Clean up memory
+    return 0;
+}
+
+Output
+--- Student Management Menu ---
+1. Create Student (Parameterized Constructor)
+2. Display Student Info
+3. Make Student Study
+4. Exit
+Enter your choice: 1
+Enter student name: Alice
+Enter age: 20
+Enter GPA: 3.8
+Parameterized constructor called.
+
+--- Student Management Menu ---
+2
+Student Name: Alice
+Age: 20
+GPA: 3.8
+
+--- Student Management Menu ---
+3
+Alice is studying.
+
+--- Student Management Menu ---
+4
+Exiting program...
+Destructor called for student: Alice
+
+
+
