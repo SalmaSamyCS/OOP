@@ -1,0 +1,145 @@
+Step 1: Define the Classes (OOP Design)
+1. BankAccount (Base Class)
+Attributes
+Data Type
+accountNumber
+string/int
+balance
+double
+
+
+Methods
+deposit(amount)
+withdraw(amount)
+getBalance()
+
+
+2. SavingsAccount (Inherits from BankAccount)
+Attributes
+Data Type
+interestRate
+double
+
+
+Methods
+applyInterest()
+
+
+3. CheckingAccount (Inherits from BankAccount)
+Attributes
+Data Type
+overdraftLimit
+double
+
+
+Methods
+withdraw(amount)
+
+
+4. Customer
+Attributes
+Data Type
+name
+string
+customerID
+string/int
+accounts
+list<BankAccount>
+
+
+Methods
+openAccount(account)
+closeAccount(accountNumber)
+getAccounts()
+
+
+5. Bank
+Attributes
+Data Type
+customers
+list<Customer>
+
+
+Methods
+addCustomer(customer)
+removeCustomer(customerID)
+getCustomerByID(id)
+
+
+Step 2: UML Diagram (Class Diagram)
+You can draw this diagram using draw.io or Lucidchart, but here’s a text-based outline:
+UML Class Relationships
+Inheritance:
+ SavingsAccount → BankAccount
+ CheckingAccount → BankAccount
+
+
+Association:
+ Customer → BankAccount (1-to-many)
+ Bank → Customer (1-to-many)
+
+
+Example Class Diagram (Text Format)
+pgsql
+CopyEdit
++--------------------+
+|     BankAccount    |
++--------------------+
+| - accountNumber    |
+| - balance          |
++--------------------+
+| + deposit()        |
+| + withdraw()       |
+| + getBalance()     |
++--------------------+
+
+       ▲
+       |
++---------------------+      +---------------------+
+|  SavingsAccount     |      |  CheckingAccount    |
++---------------------+      +---------------------+
+| - interestRate      |      | - overdraftLimit    |
++---------------------+      +---------------------+
+| + applyInterest()   |      | + withdraw()        |
++---------------------+      +---------------------+
+
++---------------------+
+|     Customer        |
++---------------------+
+| - name              |
+| - customerID        |
+| - accounts[]        |
++---------------------+
+| + openAccount()     |
+| + closeAccount()    |
+| + getAccounts()     |
++---------------------+
+
++---------------------+
+|       Bank          |
++---------------------+
+| - customers[]       |
++---------------------+
+| + addCustomer()     |
+| + removeCustomer()  |
+| + getCustomerByID() |
++---------------------+
+
+
+Step 3: Reflection and Questions
+1. How does inheritance simplify the design in this banking system?
+Inheritance allows common functionality (e.g., deposit, withdraw) to be defined once in the base class BankAccount and reused in subclasses like SavingsAccount and CheckingAccount. This avoids code duplication and makes maintenance easier.
+2. What benefits does polymorphism provide in handling withdraw() differently for different accounts?
+Polymorphism allows us to override the withdraw() method in CheckingAccount to handle overdraft logic, while SavingsAccount can use the base class method. This means we can treat all accounts uniformly but allow specific behavior when needed.
+3. How does encapsulation ensure data security?
+Encapsulation hides sensitive data (e.g., balance, accountNumber) inside the class, exposing only necessary methods (e.g., getBalance() or deposit()). This prevents unauthorized access and maintains control over how data is modified.
+4. What role does a UML class diagram play before coding?
+UML diagrams help visualize the structure and relationships between classes. It acts like a blueprint, ensuring proper planning before implementation, which reduces errors and improves system design.
+5. How would you improve this system by adding more real-world features?
+Add transaction history for accounts.
+Implement authentication (e.g., login, password).
+Introduce loan accounts or credit cards.
+Support fund transfers between accounts.
+Add notifications (email/SMS) for transactions.
+Create a GUI or Web Interface for user interaction.
+
