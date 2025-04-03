@@ -1,0 +1,199 @@
+1. What is inheritance in C++? Explain its significance in object-oriented programming.
+Inheritance is a fundamental concept in object-oriented programming (OOP) that allows a class (derived class) to inherit properties and behaviors from another class (base class). It promotes code reusability and hierarchical relationships between classes.
+
+Significance:
+
+Reduces redundancy by reusing code.
+
+Establishes hierarchical relationships.
+
+Enhances maintainability and scalability.
+
+2. How do you declare a base class in C++? Provide an example of a simple base class.
+A base class is a class from which another class inherits.
+
+cpp
+Copy
+Edit
+class Animal {
+public:
+    void makeSound() {
+        cout << "Animal makes a sound" << endl;
+    }
+};
+3. What is a derived class in C++? How does it relate to the base class?
+A derived class is a class that inherits attributes and methods from a base class.
+
+cpp
+Copy
+Edit
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "Dog barks" << endl;
+    }
+};
+Here, Dog is a derived class of Animal, meaning it has access to makeSound().
+
+4. Explain the "is-a" relationship between base and derived classes. Provide an example to illustrate this relationship.
+The "is-a" relationship signifies inheritance, meaning a derived class is a specialized version of a base class.
+
+Example:
+
+cpp
+Copy
+Edit
+class Car {
+public:
+    void drive() {
+        cout << "Car is driving" << endl;
+    }
+};
+
+class SportsCar : public Car {
+public:
+    void boost() {
+        cout << "SportsCar boosts speed!" << endl;
+    }
+};
+Here, SportsCar is-a Car.
+
+5. What is a virtual function in C++? Why is it used in inheritance?
+A virtual function allows method overriding and supports dynamic polymorphism.
+
+cpp
+Copy
+Edit
+class Animal {
+public:
+    virtual void makeSound() {
+        cout << "Animal makes a sound" << endl;
+    }
+};
+This ensures that a derived class’s function gets called instead of the base class’s.
+
+6. How is method overriding achieved in C++? Provide an example.
+Method overriding happens when a derived class redefines a function from its base class.
+
+cpp
+Copy
+Edit
+class Animal {
+public:
+    virtual void makeSound() {
+        cout << "Animal sound" << endl;
+    }
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        cout << "Dog barks" << endl;
+    }
+};
+Calling makeSound() on a Dog object will execute the overridden function.
+
+7. Describe the access specifiers (public, protected, private) in C++ inheritance.
+public: Public members remain public in the derived class.
+
+protected: Public and protected members of the base class become protected in the derived class.
+
+private: Public and protected members of the base class become private in the derived class.
+
+8. What is the purpose of the virtual keyword in C++?
+The virtual keyword allows dynamic polymorphism, ensuring that derived class functions override base class functions when called through a base class pointer.
+
+9. How do you prevent a base class function from being overridden in a derived class in C++?
+Use the final keyword.
+
+cpp
+Copy
+Edit
+class Animal {
+public:
+    virtual void makeSound() final {
+        cout << "Animal sound" << endl;
+    }
+};
+Now, no derived class can override makeSound().
+
+10. Explain the concept of multiple inheritance in C++. What challenges can arise?
+Multiple inheritance means a class can inherit from more than one base class.
+
+Example:
+
+cpp
+Copy
+Edit
+class A { public: void show() { cout << "Class A" << endl; } };
+class B { public: void show() { cout << "Class B" << endl; } };
+
+class C : public A, public B {};  // Multiple inheritance
+Challenges: If C calls show(), it results in ambiguity (both A and B have show()).
+
+11. What is the "diamond problem," and how can it be resolved?
+Diamond problem occurs when a class inherits from two classes that share a common base class.
+
+cpp
+Copy
+Edit
+class A { public: void show() { cout << "A" << endl; } };
+class B : public A {};
+class C : public A {};
+class D : public B, public C {};  // Diamond problem
+Solution: Use virtual inheritance.
+
+cpp
+Copy
+Edit
+class A { public: virtual void show() { cout << "A" << endl; } };
+class B : virtual public A {};
+class C : virtual public A {};
+class D : public B, public C {};
+12. How can you create an instance of a derived class in C++, and what happens when you call a base class method on it?
+cpp
+Copy
+Edit
+Dog d;
+d.makeSound(); // Calls derived class method if overridden
+If no override exists, it calls the base class method.
+
+13. What is dynamic polymorphism, and how does it relate to virtual functions?
+Dynamic polymorphism allows method behavior to be determined at runtime, enabled by virtual functions and pointers.
+
+cpp
+Copy
+Edit
+Animal* a = new Dog();
+a->makeSound();  // Calls Dog's overridden method
+14. Explain the role of destructors in C++ inheritance. When should a base class destructor be declared as virtual?
+If a base class has a non-virtual destructor, deleting a derived class object through a base pointer causes memory leaks.
+
+cpp
+Copy
+Edit
+class Base {
+public:
+    virtual ~Base() { cout << "Base destructor" << endl; }
+};
+15. Give an example of a real-world scenario where inheritance in C++ can be applied.
+Example: Animal Hierarchy
+
+cpp
+Copy
+Edit
+class Animal {
+public:
+    virtual void makeSound() = 0;
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override { cout << "Dog barks" << endl; }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() override { cout << "Cat meows" << endl; }
+};
+Here, Dog and Cat inherit from Animal, providing their specific implementations of makeSound().
