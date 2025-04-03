@@ -1,0 +1,164 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// 1. Rectangle Class
+class Rectangle {
+private:
+    double length, width;
+public:
+    void setDimensions(double l, double w) { length = l; width = w; }
+    double getArea() { return length * width; }
+};
+
+// 2. Person Class
+class Person {
+private:
+    string name;
+    int age;
+public:
+    Person(string n, int a) : name(n), age(a) {}
+    void display() { cout << "Name: " << name << ", Age: " << age << endl; }
+};
+
+// 3. BankAccount Class
+class BankAccount {
+private:
+    string accountNumber, accountHolderName;
+    double balance;
+public:
+    BankAccount(string accNum, string holder, double bal) : accountNumber(accNum), accountHolderName(holder), balance(bal) {}
+    void deposit(double amount) { balance += amount; }
+    void withdraw(double amount) { if(amount <= balance) balance -= amount; }
+    void display() { cout << "Account: " << accountNumber << ", Holder: " << accountHolderName << ", Balance: $" << balance << endl; }
+};
+
+// 4. Circle Class
+class Circle {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+    double getArea() { return 3.14159 * radius * radius; }
+    double getCircumference() { return 2 * 3.14159 * radius; }
+};
+
+// 5. Book Class
+class Book {
+private:
+    string title, author;
+    int publicationYear;
+public:
+    Book(string t, string a, int y) : title(t), author(a), publicationYear(y) {}
+    void display() { cout << "Title: " << title << ", Author: " << author << ", Year: " << publicationYear << endl; }
+};
+
+// 6. Date Class
+class Date {
+private:
+    int day, month, year;
+public:
+    Date(int d, int m, int y) : day(d), month(m), year(y) {}
+    void display() { cout << day << "/" << month << "/" << year << endl; }
+};
+
+// 7. Employee Class
+class Employee {
+private:
+    string name;
+    int employeeId;
+    double salary;
+public:
+    Employee(string n, int id, double s) : name(n), employeeId(id), salary(s) {}
+    void giveRaise(double percentage) { salary += salary * (percentage / 100); }
+    void display() { cout << "Employee: " << name << ", ID: " << employeeId << ", Salary: $" << salary << endl; }
+};
+
+// 8. Car Class
+class Car {
+private:
+    string make, model;
+    int year;
+public:
+    Car(string m, string mo, int y) : make(m), model(mo), year(y) {}
+    void display() { cout << "Make: " << make << ", Model: " << model << ", Year: " << year << endl; }
+};
+// 9. Student Class
+class Student {
+private:
+    string name;
+    int rollNumber;
+    double marks;
+public:
+    Student(string n, int r, double m) : name(n), rollNumber(r), marks(m) {}
+    char getGrade() {
+        if (marks >= 90) return 'A';
+        else if (marks >= 80) return 'B';
+        else if (marks >= 70) return 'C';
+        else if (marks >= 60) return 'D';
+        else return 'F';
+    }
+    void display() { cout << "Name: " << name << ", Roll No: " << rollNumber << ", Grade: " << getGrade() << endl; }
+};
+
+// 10. Complex Number Class
+class Complex {
+private:
+    double real, imag;
+public:
+    Complex(double r, double i) : real(r), imag(i) {}
+    Complex add(Complex c) { return Complex(real + c.real, imag + c.imag); }
+    Complex multiply(Complex c) { return Complex(real * c.real - imag * c.imag, real * c.imag + imag * c.real); }
+    void display() { cout << real << " + " << imag << "i" << endl; }
+};
+
+int main() {
+    // Demonstrate Rectangle
+    Rectangle rect;
+    rect.setDimensions(5.0, 10.0);
+    cout << "Rectangle Area: " << rect.getArea() << endl;
+    
+    // Demonstrate Person
+    Person p1("Alice", 30);
+    p1.display();
+    
+    // Demonstrate BankAccount
+    BankAccount acc("12345", "John Doe", 1000.0);
+    acc.deposit(500);
+    acc.withdraw(200);
+    acc.display();
+    
+    // Demonstrate Circle
+    Circle c1(5.0);
+    cout << "Circle Area: " << c1.getArea() << ", Circumference: " << c1.getCircumference() << endl;
+    
+    // Demonstrate Books
+    vector<Book> books = {Book("C++ Primer", "Lippman", 2013), Book("Effective C++", "Meyers", 2005)};
+    for (auto& b : books) b.display();
+    
+    // Demonstrate Date
+    Date d1(5, 10, 2023);
+    d1.display();
+    
+    // Demonstrate Employee
+    Employee e1("Mike", 101, 50000);
+    e1.giveRaise(10);
+    e1.display();
+    
+    // Demonstrate Car
+    Car car1("Toyota", "Camry", 2020);
+    car1.display();
+    
+    // Demonstrate Student
+    Student s1("Bob", 101, 85);
+    s1.display();
+    
+    // Demonstrate Complex Numbers
+    Complex num1(3, 4), num2(1, 2);
+    Complex sum = num1.add(num2);
+    Complex product = num1.multiply(num2);
+    cout << "Sum: "; sum.display();
+    cout << "Product: "; product.display();
+    
+    return 0;
+}
