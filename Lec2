@@ -1,0 +1,553 @@
+1. Explain the four key principles of OOP: Encapsulation, Inheritance, Polymorphism, and Abstraction, with real-world examples.
+Encapsulation
+Encapsulation is the bundling of data and methods that operate on the data while restricting direct access to some details.
+
+Real-world Example: A Car has private data (engine details), and the driver only interacts with it using a steering wheel and pedals.
+
+Inheritance
+Inheritance allows a class (child) to acquire properties and behaviors from another class (parent).
+
+Real-world Example: A Dog inherits characteristics from an Animal class.
+
+Polymorphism
+Polymorphism allows one interface to be used for different types.
+
+Real-world Example: A "Shape" class has a method draw(), but different shapes like Circle and Rectangle implement their own versions of draw().
+
+Abstraction
+Abstraction hides unnecessary details from the user and exposes only the relevant information.
+
+Real-world Example: An ATM machine allows users to perform transactions without knowing the internal banking operations.
+
+2. How does encapsulation improve software security and maintainability? Provide an example in C++.
+Encapsulation restricts direct access to variables and ensures controlled access through methods.
+
+C++ Example:
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class BankAccount {
+private:
+    double balance;  // Private variable
+
+public:
+    BankAccount(double initialBalance) {
+        balance = initialBalance;
+    }
+
+    void deposit(double amount) {
+        if (amount > 0) balance += amount;
+    }
+
+    double getBalance() {
+        return balance;
+    }
+};
+
+int main() {
+    BankAccount account(5000);
+    account.deposit(1000);
+    cout << "Balance: " << account.getBalance() << endl;  // Balance: 6000
+    return 0;
+}
+Here, balance is private, so it cannot be modified directly.
+
+3. What is the difference between class and object? Illustrate with an example in C++.
+Class: A blueprint for creating objects.
+
+Object: An instance of a class with actual values.
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Car {
+public:
+    string brand;
+    int year;
+
+    Car(string b, int y) {
+        brand = b;
+        year = y;
+    }
+
+    void display() {
+        cout << "Brand: " << brand << ", Year: " << year << endl;
+    }
+};
+
+int main() {
+    Car car1("Toyota", 2020);
+    Car car2("Honda", 2019);
+
+    car1.display();
+    car2.display();
+
+    return 0;
+}
+Output:
+
+yaml
+Copy
+Edit
+Brand: Toyota, Year: 2020
+Brand: Honda, Year: 2019
+4. Describe the concept of polymorphism and differentiate between method overloading and method overriding.
+Polymorphism
+Polymorphism allows the same function to have different implementations depending on the context.
+
+Method Overloading: Functions with the same name but different parameters in the same class.
+
+Method Overriding: A function in a child class redefines a function in the parent class.
+
+Example in C++:
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+// Method Overloading (same function, different parameters)
+class Math {
+public:
+    int add(int a, int b) {
+        return a + b;
+    }
+
+    double add(double a, double b) {
+        return a + b;
+    }
+};
+
+// Method Overriding (child class redefines method)
+class Animal {
+public:
+    virtual void makeSound() {
+        cout << "Some generic animal sound\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        cout << "Bark!\n";
+    }
+};
+
+int main() {
+    Math math;
+    cout << math.add(2, 3) << endl;      // Overloading: Outputs 5
+    cout << math.add(2.5, 3.5) << endl;  // Overloading: Outputs 6.0
+
+    Dog myDog;
+    myDog.makeSound();  // Overriding: Outputs "Bark!"
+
+    return 0;
+}
+5. What are design patterns? Explain the Singleton and Factory design patterns with examples.
+Singleton Pattern
+Ensures only one instance of a class exists.
+
+C++ Example:
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Singleton {
+private:
+    static Singleton* instance;
+    Singleton() {}  // Private constructor
+
+public:
+    static Singleton* getInstance() {
+        if (instance == nullptr) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+};
+
+Singleton* Singleton::instance = nullptr;
+
+int main() {
+    Singleton* obj1 = Singleton::getInstance();
+    Singleton* obj2 = Singleton::getInstance();
+    
+    cout << (obj1 == obj2) << endl;  // Outputs: 1 (same instance)
+
+    return 0;
+}
+Factory Pattern
+Creates objects without specifying the exact class.
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Animal {
+public:
+    virtual void makeSound() = 0;
+};
+
+class Dog : public Animal {
+public:
+    void makeSound() override {
+        cout << "Bark!\n";
+    }
+};
+
+class Cat : public Animal {
+public:
+    void makeSound() override {
+        cout << "Meow!\n";
+    }
+};
+
+// Factory
+class AnimalFactory {
+public:
+    static Animal* createAnimal(string type) {
+        if (type == "dog") return new Dog();
+        else if (type == "cat") return new Cat();
+        else return nullptr;
+    }
+};
+
+int main() {
+    Animal* myPet = AnimalFactory::createAnimal("dog");
+    if (myPet) myPet->makeSound();  // Outputs "Bark!"
+
+    delete myPet;
+    return 0;
+}
+6. How does the principle of inheritance promote code reusability? Give an example.
+Inheritance allows a new class to reuse the existing functionality of a parent class without rewriting it.
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Animal {
+public:
+    void eat() {
+        cout << "Eating...\n";
+    }
+};
+
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "Barking...\n";
+    }
+};
+
+int main() {
+    Dog myDog;
+    myDog.eat();  // Inherited from Animal
+    myDog.bark(); // Dog's own method
+
+    return 0;
+}
+Output:
+
+Copy
+Edit
+Eating...
+Barking...
+7. What is the role of interfaces and abstract classes in OOP design? How do they differ?
+Abstract Classes: Can have both implemented and pure virtual functions.
+
+Interfaces: Only contain pure virtual functions (in C++, interfaces are implemented as abstract classes with only pure virtual methods).
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Vehicle { // Abstract class
+public:
+    virtual void start() = 0; // Pure virtual function
+};
+
+class Car : public Vehicle {
+public:
+    void start() override {
+        cout << "Car is starting...\n";
+    }
+};
+
+int main() {
+    Car myCar;
+    myCar.start();  // Outputs: Car is starting...
+    return 0;
+}
+
+. Discuss the advantages of OOP over procedural programming.
+OOP offers several advantages over procedural programming:
+
+Encapsulation – Bundles data and methods together, preventing unintended modifications.
+
+Reusability – Inheritance allows code reuse, reducing redundancy.
+
+Scalability – Objects and classes make it easier to scale large applications.
+
+Maintainability – Code is more organized and easier to modify.
+
+Flexibility – Polymorphism allows functions and methods to handle different data types.
+
+Security – Encapsulation restricts direct data access.
+
+Example comparison:
+
+Procedural Programming (C-style)
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+void printDetails(string name, int age) {
+    cout << "Name: " << name << ", Age: " << age << endl;
+}
+
+int main() {
+    printDetails("Alice", 25);
+    return 0;
+}
+OOP Approach
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Person {
+public:
+    string name;
+    int age;
+
+    Person(string n, int a) {
+        name = n;
+        age = a;
+    }
+
+    void printDetails() {
+        cout << "Name: " << name << ", Age: " << age << endl;
+    }
+};
+
+int main() {
+    Person p("Alice", 25);
+    p.printDetails();
+    return 0;
+}
+OOP makes the code more modular and reusable.
+
+9. What is the SOLID principle in OOP? Explain each of the five principles with an example.
+The SOLID principles are:
+
+S – Single Responsibility Principle (SRP)
+
+A class should have one reason to change.
+
+Example: A class Employee should only handle employee data, not salary calculations.
+
+O – Open/Closed Principle (OCP)
+
+A class should be open for extension but closed for modification.
+
+Example: Instead of modifying a Shape class to add new shapes, create new derived classes.
+
+L – Liskov Substitution Principle (LSP)
+
+Subclasses should be substitutable for their base class without affecting functionality.
+
+Example: A Bird class should not have a fly() method if some birds (e.g., penguins) can't fly.
+
+I – Interface Segregation Principle (ISP)
+
+Clients should not be forced to implement unused methods.
+
+Example: A Printer interface should not force Scanner functionality.
+
+D – Dependency Inversion Principle (DIP)
+
+High-level modules should not depend on low-level modules, but both should depend on abstractions.
+
+Example: Instead of MySQLDatabase class, use a DatabaseInterface.
+
+Example (SRP & OCP in C++):
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+// SRP: Employee only stores details
+class Employee {
+public:
+    string name;
+    double salary;
+    
+    Employee(string n, double s) : name(n), salary(s) {}
+
+    void display() {
+        cout << "Employee: " << name << ", Salary: " << salary << endl;
+    }
+};
+
+// OCP: Extend without modifying Employee
+class BonusCalculator {
+public:
+    static double calculateBonus(Employee e) {
+        return e.salary * 0.1;
+    }
+};
+
+int main() {
+    Employee emp("John", 5000);
+    emp.display();
+    cout << "Bonus: " << BonusCalculator::calculateBonus(emp) << endl;
+    return 0;
+}
+10. How would you design a simple object-oriented system for an online bookstore? Identify key classes and their relationships.
+Key classes:
+
+Book – Represents books with title, author, price, and stock.
+
+User – Represents customers with name, address, and order history.
+
+Order – Stores details of purchased books.
+
+Cart – Manages selected books before purchase.
+
+Example C++ Implementation:
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Book {
+public:
+    string title;
+    string author;
+    double price;
+
+    Book(string t, string a, double p) : title(t), author(a), price(p) {}
+
+    void display() {
+        cout << "Title: " << title << ", Author: " << author << ", Price: $" << price << endl;
+    }
+};
+
+class Cart {
+public:
+    vector<Book> books;
+
+    void addBook(Book book) {
+        books.push_back(book);
+    }
+
+    void showCart() {
+        cout << "Cart items:\n";
+        for (auto &book : books) {
+            book.display();
+        }
+    }
+};
+
+int main() {
+    Book b1("C++ Programming", "Bjarne Stroustrup", 39.99);
+    Book b2("Data Structures", "Mark Weiss", 45.50);
+
+    Cart myCart;
+    myCart.addBook(b1);
+    myCart.addBook(b2);
+    
+    myCart.showCart();
+    return 0;
+}
+11. What is UML, and why is it used in software development?
+UML (Unified Modeling Language) is a standardized way to visualize software design. It is used to:
+
+Model system architecture before coding.
+
+Communicate design between teams.
+
+Document software structure for maintenance.
+
+12. Describe the purpose of a class diagram and its key components.
+A class diagram represents the structure of a system, showing:
+
+Classes (boxes with attributes & methods).
+
+Relationships (inheritance, associations).
+
+Multiplicities (one-to-many, many-to-many).
+
+Example:
+
+lua
+Copy
+Edit
++------------------+
+|     Book        |
++------------------+
+| title: string   |
+| author: string  |
+| price: double   |
++------------------+
+| display()       |
++------------------+
+13. Draw a class diagram for a library management system with classes such as Book, Member, and Librarian.
+I can generate a UML diagram if you want. Let me know!
+
+14. What is the difference between an object diagram and a class diagram? Provide an example.
+Class Diagram: Shows blueprint (structure) of the system.
+
+Object Diagram: Represents specific instances of objects at runtime.
+
+15. How does a component diagram help in modeling large software systems?
+A component diagram shows how different parts of a system interact at a high level. Useful for microservices architecture.
+
+16. Describe the use of a deployment diagram in system architecture. Provide an example.
+A deployment diagram shows the physical deployment of software on hardware nodes (e.g., databases, servers).
+
+17. What are behavioral diagrams in UML? Name at least three types and explain their purposes.
+Use Case Diagram – Shows user interactions.
+
+Sequence Diagram – Shows object interactions over time.
+
+State Diagram – Shows object states and transitions.
+
+18. How does a use case diagram help in gathering software requirements? Provide an example.
+It visually represents actors and system interactions, helping stakeholders understand functionality.
+
+19. Draw a sequence diagram for an online shopping checkout process.
+I can generate a UML sequence diagram if needed.
+
+20. Compare activity diagrams and state diagrams. When would you use each?
+Activity Diagrams – Show workflow of a process (useful for business logic).
+
+State Diagrams – Show object states and transitions (useful for lifecycle management).
