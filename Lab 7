@@ -1,45 +1,62 @@
-1. Singleton Pattern - Configuration Manager
+1. Singleton Pattern
+The Singleton pattern ensures that a class has only one instance, and provides a global point of access to it.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
 #include <fstream>
 #include <string>
+using namespace std;
 
-class ConfigManager {
+class ConfigurationManager {
 private:
-    static ConfigManager* instance;
-    std::string setting;
-    
-    ConfigManager() {
-        std::ifstream file("config.txt");
-        if (file) {
-            getline(file, setting);
+    static ConfigurationManager* instance;
+    string config;
+
+    // Private constructor to prevent instantiation
+    ConfigurationManager() {
+        // Load configuration from a file (for demonstration)
+        ifstream file("config.txt");
+        if (file.is_open()) {
+            getline(file, config);
+            file.close();
         }
     }
 
 public:
-    static ConfigManager* getInstance() {
-        if (!instance) {
-            instance = new ConfigManager();
+    static ConfigurationManager* getInstance() {
+        if (instance == nullptr) {
+            instance = new ConfigurationManager();
         }
         return instance;
     }
 
-    std::string getSetting() {
-        return setting;
-    }
+    string getConfig() { return config; }
 };
 
-ConfigManager* ConfigManager::instance = nullptr;
+// Initialize the static instance pointer
+ConfigurationManager* ConfigurationManager::instance = nullptr;
 
 int main() {
-    ConfigManager* config = ConfigManager::getInstance();
-    std::cout << "Setting: " << config->getSetting() << std::endl;
+    ConfigurationManager* config1 = ConfigurationManager::getInstance();
+    cout << "Config: " << config1->getConfig() << endl;
+
+    // Both instances are the same
+    ConfigurationManager* config2 = ConfigurationManager::getInstance();
+    cout << "Config: " << config2->getConfig() << endl;
+
+    return 0;
 }
-2. Factory Method Pattern - Shape Factory
+2. Factory Method Pattern
+The Factory Method Pattern defines an interface for creating an object, but allows subclasses to alter the type of objects that will be created.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
+#include <memory>
+using namespace std;
 
 class Shape {
 public:
@@ -49,47 +66,52 @@ public:
 class Circle : public Shape {
 public:
     void draw() override {
-        std::cout << "Drawing Circle\n";
+        cout << "Drawing a Circle" << endl;
     }
 };
 
 class Rectangle : public Shape {
 public:
     void draw() override {
-        std::cout << "Drawing Rectangle\n";
+        cout << "Drawing a Rectangle" << endl;
     }
 };
 
 class Triangle : public Shape {
 public:
     void draw() override {
-        std::cout << "Drawing Triangle\n";
+        cout << "Drawing a Triangle" << endl;
     }
 };
 
 class ShapeFactory {
 public:
-    static Shape* createShape(std::string type) {
-        if (type == "circle") return new Circle();
-        if (type == "rectangle") return new Rectangle();
-        if (type == "triangle") return new Triangle();
+    static unique_ptr<Shape> createShape(const string& shapeType) {
+        if (shapeType == "Circle") return make_unique<Circle>();
+        if (shapeType == "Rectangle") return make_unique<Rectangle>();
+        if (shapeType == "Triangle") return make_unique<Triangle>();
         return nullptr;
     }
 };
 
 int main() {
-    Shape* shape = ShapeFactory::createShape("circle");
-    if (shape) {
-        shape->draw();
-        delete shape;
-    }
+    auto shape1 = ShapeFactory::createShape("Circle");
+    shape1->draw();
+    auto shape2 = ShapeFactory::createShape("Rectangle");
+    shape2->draw();
+    return 0;
 }
-3. Observer Pattern - Weather Monitoring System
+3. Observer Pattern
+The Observer Pattern allows an object (subject) to notify dependent objects (observers) of state changes without knowing who or what those objects are.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <ctime>
+using namespace std;
 
 class Observer {
 public:
@@ -98,12 +120,16 @@ public:
 
 class WeatherStation {
 private:
-    std::vector<Observer*> observers;
     int temperature;
+    vector<Observer*> observers;
 
 public:
-    void addObserver(Observer* obs) {
-        observers.push_back(obs);
+    void addObserver(Observer* observer) {
+        observers.push_back(observer);
+    }
+
+    void removeObserver(Observer* observer) {
+        observers.erase(remove(observers.begin(), observers.end(), observer), observers.end());
     }
 
     void setTemperature(int temp) {
@@ -112,127 +138,255 @@ public:
     }
 
     void notifyObservers() {
-        for (Observer* obs : observers) {
-            obs->update(temperature);
+        for (auto observer : observers) {
+            observer->update(temperature);
         }
     }
 };
 
 class Display : public Observer {
+private:
+    string name;
 public:
+    Display(string n) : name(n) {}
+
     void update(int temperature) override {
-        std::cout << "Current Temperature: " << temperature << "°C\n";
+        cout << name << " received update: Temperature is " << temperature << "°C" << endl;
     }
 };
 
 int main() {
+    srand(time(0));
     WeatherStation station;
-    Display display;
+    Display display1("Display 1"), display2("Display 2");
 
-    station.addObserver(&display);
-    station.setTemperature(rand() % 35);
+    station.addObserver(&display1);
+    station.addObserver(&display2);
+
+    // Simulate weather changes
+    for (int i = 0; i < 5; ++i) {
+        station.setTemperature(rand() % 30 + 1);
+    }
+
+    return 0;
 }
-4. Decorator Pattern - Text Formatting
+4. Decorator Pattern
+The Decorator Pattern allows you to add new functionality to an object without altering its structure.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
 #include <string>
+using namespace std;
 
 class Text {
 public:
-    virtual std::string render() = 0;
+    virtual string getText() = 0;
 };
 
-class PlainText : public Text {
-private:
-    std::string content;
+class SimpleText : public Text {
 public:
-    PlainText(std::string txt) : content(txt) {}
-    std::string render() override {
-        return content;
+    string getText() override {
+        return "Plain Text";
     }
 };
 
-class BoldText : public Text {
-private:
-    Text* text;
+class TextDecorator : public Text {
+protected:
+    Text* wrappedText;
 public:
-    BoldText(Text* txt) : text(txt) {}
-    std::string render() override {
-        return "<b>" + text->render() + "</b>";
+    TextDecorator(Text* text) : wrappedText(text) {}
+};
+
+class BoldDecorator : public TextDecorator {
+public:
+    BoldDecorator(Text* text) : TextDecorator(text) {}
+
+    string getText() override {
+        return "<b>" + wrappedText->getText() + "</b>";
+    }
+};
+
+class ItalicDecorator : public TextDecorator {
+public:
+    ItalicDecorator(Text* text) : TextDecorator(text) {}
+
+    string getText() override {
+        return "<i>" + wrappedText->getText() + "</i>";
     }
 };
 
 int main() {
-    Text* text = new BoldText(new PlainText("Hello"));
-    std::cout << text->render() << std::endl;
-    delete text;
+    Text* text = new SimpleText();
+    cout << text->getText() << endl;
+
+    text = new BoldDecorator(text);
+    cout << text->getText() << endl;
+
+    text = new ItalicDecorator(text);
+    cout << text->getText() << endl;
+
+    return 0;
 }
-5. Command Pattern - Smart Home Remote
+5. Command Pattern
+The Command Pattern encapsulates a request as an object, thereby allowing for parameterization and queuing of requests.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
+#include <memory>
+using namespace std;
 
 class Command {
 public:
     virtual void execute() = 0;
 };
 
-class LightOnCommand : public Command {
+class Light {
 public:
-    void execute() override {
-        std::cout << "Light is ON\n";
+    void turnOn() {
+        cout << "Light is ON" << endl;
+    }
+
+    void turnOff() {
+        cout << "Light is OFF" << endl;
     }
 };
 
-class ThermostatCommand : public Command {
+class TurnOnCommand : public Command {
+private:
+    Light* light;
 public:
+    TurnOnCommand(Light* l) : light(l) {}
+
     void execute() override {
-        std::cout << "Thermostat set to 22°C\n";
+        light->turnOn();
+    }
+};
+
+class TurnOffCommand : public Command {
+private:
+    Light* light;
+public:
+    TurnOffCommand(Light* l) : light(l) {}
+
+    void execute() override {
+        light->turnOff();
+    }
+};
+
+class RemoteControl {
+private:
+    Command* command;
+public:
+    void setCommand(Command* c) {
+        command = c;
+    }
+
+    void pressButton() {
+        command->execute();
     }
 };
 
 int main() {
-    Command* lightOn = new LightOnCommand();
-    Command* thermostat = new ThermostatCommand();
+    Light light;
+    TurnOnCommand turnOn(&light);
+    TurnOffCommand turnOff(&light);
+    RemoteControl remote;
 
-    lightOn->execute();
-    thermostat->execute();
+    remote.setCommand(&turnOn);
+    remote.pressButton();
 
-    delete lightOn;
-    delete thermostat;
+    remote.setCommand(&turnOff);
+    remote.pressButton();
+
+    return 0;
 }
-6. State Pattern - Vending Machine
-cpp
-Copy code
-#include <iostream>
+6. State Pattern
+The State Pattern allows an object to change its behavior when its internal state changes.
 
-class State {
+cpp
+Copy
+Edit
+#include <iostream>
+#include <string>
+using namespace std;
+
+class VendingMachine;
+
+class VendingMachineState {
 public:
-    virtual void insertCoin() = 0;
-    virtual void dispense() = 0;
+    virtual void insertCoin(VendingMachine* vm) = 0;
+    virtual void dispense(VendingMachine* vm) = 0;
 };
 
-class NoCoinState : public State {
+class VendingMachine {
+private:
+    VendingMachineState* currentState;
+
 public:
-    void insertCoin() override {
-        std::cout << "Coin inserted\n";
+    VendingMachine(VendingMachineState* initialState) : currentState(initialState) {}
+
+    void setState(VendingMachineState* newState) {
+        currentState = newState;
     }
-    void dispense() override {
-        std::cout << "Insert coin first\n";
+
+    void insertCoin() {
+        currentState->insertCoin(this);
+    }
+
+    void dispense() {
+        currentState->dispense(this);
+    }
+};
+
+class NoCoinState : public VendingMachineState {
+public:
+    void insertCoin(VendingMachine* vm) override {
+        cout << "Coin inserted" << endl;
+        vm->setState(new HasCoinState());
+    }
+
+    void dispense(VendingMachine* vm) override {
+        cout << "Insert coin first" << endl;
+    }
+};
+
+class HasCoinState : public VendingMachineState {
+public:
+    void insertCoin(VendingMachine* vm) override {
+        cout << "Coin already inserted" << endl;
+    }
+
+    void dispense(VendingMachine* vm) override {
+        cout << "Item dispensed" << endl;
+        vm->setState(new NoCoinState());
     }
 };
 
 int main() {
-    State* state = new NoCoinState();
-    state->insertCoin();
-    state->dispense();
-    delete state;
+    VendingMachine vm(new NoCoinState());
+
+    vm.insertCoin();
+    vm.dispense();
+
+    vm.insertCoin();
+    vm.insertCoin();
+    vm.dispense();
+
+    return 0;
 }
-7. Strategy Pattern - Payment System
+7. Strategy Pattern
+The Strategy Pattern allows a strategy to be selected at runtime for an algorithm.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
+#include <memory>
+using namespace std;
 
 class PaymentStrategy {
 public:
@@ -242,88 +396,210 @@ public:
 class CreditCardPayment : public PaymentStrategy {
 public:
     void pay(int amount) override {
-        std::cout << "Paid $" << amount << " using Credit Card\n";
+        cout << "Paid " << amount << " using Credit Card" << endl;
+    }
+};
+
+class PayPalPayment : public PaymentStrategy {
+public:
+    void pay(int amount) override {
+        cout << "Paid " << amount << " using PayPal" << endl;
+    }
+};
+
+class BitcoinPayment : public PaymentStrategy {
+public:
+    void pay(int amount) override {
+        cout << "Paid " << amount << " using Bitcoin" << endl;
+    }
+};
+
+class PaymentContext {
+private:
+    unique_ptr<PaymentStrategy> strategy;
+public:
+    void setStrategy(PaymentStrategy* s) {
+        strategy.reset(s);
+    }
+
+    void executePayment(int amount) {
+        strategy->pay(amount);
     }
 };
 
 int main() {
-    PaymentStrategy* payment = new CreditCardPayment();
-    payment->pay(100);
-    delete payment;
+    PaymentContext context;
+
+    context.setStrategy(new CreditCardPayment());
+    context.executePayment(100);
+
+    context.setStrategy(new PayPalPayment());
+    context.executePayment(200);
+
+    context.setStrategy(new BitcoinPayment());
+    context.executePayment(300);
+
+    return 0;
 }
-8. Composite Pattern - File System
+
+8. Composite Pattern
+The Composite Pattern is used to treat individual objects and compositions of objects uniformly. This is especially useful for representing hierarchical structures.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
 #include <vector>
+#include <memory>
+using namespace std;
 
-class FileSystem {
+class FileSystemComponent {
 public:
-    virtual void show() = 0;
+    virtual void display(int indent) = 0;
+    virtual int getSize() = 0;
 };
 
-class File : public FileSystem {
+class File : public FileSystemComponent {
 private:
-    std::string name;
+    string name;
+    int size;
 public:
-    File(std::string n) : name(n) {}
-    void show() override {
-        std::cout << "File: " << name << "\n";
+    File(string n, int s) : name(n), size(s) {}
+
+    void display(int indent) override {
+        for (int i = 0; i < indent; ++i) cout << " ";
+        cout << "File: " << name << " (" << size << " bytes)" << endl;
+    }
+
+    int getSize() override {
+        return size;
     }
 };
 
-class Directory : public FileSystem {
+class Directory : public FileSystemComponent {
 private:
-    std::vector<FileSystem*> items;
+    string name;
+    vector<shared_ptr<FileSystemComponent>> components;
 public:
-    void add(FileSystem* item) {
-        items.push_back(item);
+    Directory(string n) : name(n) {}
+
+    void add(shared_ptr<FileSystemComponent> component) {
+        components.push_back(component);
     }
-    void show() override {
-        for (FileSystem* item : items)
-            item->show();
+
+    void display(int indent) override {
+        for (int i = 0; i < indent; ++i) cout << " ";
+        cout << "Directory: " << name << endl;
+        for (auto& component : components) {
+            component->display(indent + 2);
+        }
+    }
+
+    int getSize() override {
+        int totalSize = 0;
+        for (auto& component : components) {
+            totalSize += component->getSize();
+        }
+        return totalSize;
     }
 };
 
 int main() {
-    Directory root;
-    root.add(new File("file1.txt"));
-    root.add(new File("file2.txt"));
+    shared_ptr<Directory> rootDir = make_shared<Directory>("Root");
 
-    root.show();
+    shared_ptr<File> file1 = make_shared<File>("File1.txt", 120);
+    shared_ptr<File> file2 = make_shared<File>("File2.txt", 80);
+    shared_ptr<Directory> subDir = make_shared<Directory>("SubDirectory");
+    shared_ptr<File> file3 = make_shared<File>("File3.txt", 200);
+
+    subDir->add(file3);
+    rootDir->add(file1);
+    rootDir->add(file2);
+    rootDir->add(subDir);
+
+    rootDir->display(0);
+    cout << "Total size: " << rootDir->getSize() << " bytes" << endl;
+
+    return 0;
 }
-9. Builder Pattern - Burger Ordering
+9. Builder Pattern
+The Builder Pattern is used to construct complex objects step by step.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
+#include <string>
+using namespace std;
 
 class Burger {
+private:
+    string bun;
+    string patty;
+    string cheese;
+    string sauce;
+
 public:
-    void addIngredient(std::string ingredient) {
-        std::cout << "Added: " << ingredient << "\n";
+    void setBun(const string& b) { bun = b; }
+    void setPatty(const string& p) { patty = p; }
+    void setCheese(const string& c) { cheese = c; }
+    void setSauce(const string& s) { sauce = s; }
+
+    void display() {
+        cout << "Burger: " << bun << " bun, " << patty << " patty, " << cheese << " cheese, " << sauce << " sauce" << endl;
     }
 };
 
 class BurgerBuilder {
 private:
-    Burger* burger;
+    Burger burger;
+
 public:
-    BurgerBuilder() { burger = new Burger(); }
-    BurgerBuilder* addPatty() {
-        burger->addIngredient("Patty");
-        return this;
+    BurgerBuilder& addBun(const string& bun) {
+        burger.setBun(bun);
+        return *this;
     }
-    Burger* build() { return burger; }
+
+    BurgerBuilder& addPatty(const string& patty) {
+        burger.setPatty(patty);
+        return *this;
+    }
+
+    BurgerBuilder& addCheese(const string& cheese) {
+        burger.setCheese(cheese);
+        return *this;
+    }
+
+    BurgerBuilder& addSauce(const string& sauce) {
+        burger.setSauce(sauce);
+        return *this;
+    }
+
+    Burger build() {
+        return burger;
+    }
 };
 
 int main() {
-    Burger* myBurger = BurgerBuilder().addPatty()->build();
-    delete myBurger;
+    BurgerBuilder builder;
+    Burger burger = builder.addBun("Whole wheat")
+                          .addPatty("Beef")
+                          .addCheese("Cheddar")
+                          .addSauce("BBQ")
+                          .build();
+
+    burger.display();
+    return 0;
 }
-10. Proxy Pattern - Database Access
+10. Proxy Pattern
+The Proxy Pattern provides an object representing another object. It controls access to the original object.
+
 cpp
-Copy code
+Copy
+Edit
 #include <iostream>
+#include <string>
+using namespace std;
 
 class Database {
 public:
@@ -333,22 +609,155 @@ public:
 class RealDatabase : public Database {
 public:
     void query() override {
-        std::cout << "Querying Database...\n";
+        cout << "Executing query on database" << endl;
     }
 };
 
-class ProxyDatabase : public Database {
+class DatabaseProxy : public Database {
 private:
-    RealDatabase* db;
+    RealDatabase* realDatabase;
+    bool isAuthorized;
+
 public:
-    ProxyDatabase() { db = new RealDatabase(); }
+    DatabaseProxy(bool auth) : isAuthorized(auth) {
+        realDatabase = new RealDatabase();
+    }
+
+    ~DatabaseProxy() {
+        delete realDatabase;
+    }
+
     void query() override {
-        std::cout << "Access granted\n";
-        db->query();
+        if (isAuthorized) {
+            realDatabase->query();
+        } else {
+            cout << "Access denied!" << endl;
+        }
     }
 };
 
 int main() {
-    ProxyDatabase proxy;
-    proxy.query();
+    Database* db = new DatabaseProxy(true);
+    db->query();
+
+    delete db;
+
+    db = new DatabaseProxy(false);
+    db->query();
+
+    delete db;
+    return 0;
+}
+11. Abstract Factory Pattern
+The Abstract Factory Pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes.
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <memory>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() = 0;
+};
+
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing Circle" << endl;
+    }
+};
+
+class Square : public Shape {
+public:
+    void draw() override {
+        cout << "Drawing Square" << endl;
+    }
+};
+
+class ShapeFactory {
+public:
+    virtual unique_ptr<Shape> createShape() = 0;
+};
+
+class CircleFactory : public ShapeFactory {
+public:
+    unique_ptr<Shape> createShape() override {
+        return make_unique<Circle>();
+    }
+};
+
+class SquareFactory : public ShapeFactory {
+public:
+    unique_ptr<Shape> createShape() override {
+        return make_unique<Square>();
+    }
+};
+
+int main() {
+    unique_ptr<ShapeFactory> factory1 = make_unique<CircleFactory>();
+    unique_ptr<Shape> shape1 = factory1->createShape();
+    shape1->draw();
+
+    unique_ptr<ShapeFactory> factory2 = make_unique<SquareFactory>();
+    unique_ptr<Shape> shape2 = factory2->createShape();
+    shape2->draw();
+
+    return 0;
+}
+12. Template Method Pattern
+The Template Method Pattern defines the skeleton of an algorithm, allowing subclasses to provide specific steps without altering the overall structure.
+
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+class Report {
+public:
+    void generateReport() {
+        setUp();
+        generateContent();
+        generateFooter();
+    }
+
+protected:
+    virtual void setUp() {
+        cout << "Setting up the report" << endl;
+    }
+
+    virtual void generateContent() = 0;
+
+    virtual void generateFooter() {
+        cout << "Adding footer to report" << endl;
+    }
+};
+
+class PDFReport : public Report {
+protected:
+    void generateContent() override {
+        cout << "Generating PDF content" << endl;
+    }
+};
+
+class HTMLReport : public Report {
+protected:
+    void generateContent() override {
+        cout << "Generating HTML content" << endl;
+    }
+};
+
+int main() {
+    PDFReport pdfReport;
+    pdfReport.generateReport();
+
+    cout << endl;
+
+    HTMLReport htmlReport;
+    htmlReport.generateReport();
+
+    return 0;
 }
