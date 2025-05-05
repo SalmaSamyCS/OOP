@@ -1,0 +1,886 @@
+1- library system singleton 
+#include <iostream>
+#include <vector>
+#include <string>
+
+class Item {
+public:
+    virtual ~Item() {}
+    virtual std::string getTitle() const = 0;
+};
+
+class Book : public Item {
+private:
+    std::string title;
+    std::string author;
+public:
+    Book(const std::string& t, const std::string& a) : title(t), author(a) {}
+    std::string getTitle() const override {
+        return title;
+    }
+    std::string getAuthor() const {
+        return author;
+    }
+    bool operator==(const Book& other) const {
+        return title == other.title && author == other.author;
+    }
+};
+
+class LibraryManager {
+private:
+    std::vector<Book> books;
+    static LibraryManager* instance;
+    LibraryManager() {}
+    LibraryManager(const LibraryManager&) = delete;
+    LibraryManager& operator=(const LibraryManager&) = delete;
+public:
+    static LibraryManager* getInstance() {
+        if (!instance)
+            instance = new LibraryManager();
+        return instance;
+    }
+
+    void addBook(const Book& book) {
+        books.push_back(book);
+    }
+
+    void removeBook(const Book& book) {
+        for (auto it = books.begin(); it != books.end(); ++it) {
+            if (*it == book) {
+                books.erase(it);
+                break;
+            }
+        }
+    }
+
+    void listBooks() const {
+        for (const auto& book : books) {
+            std::cout << book.getTitle() << " by " << book.getAuthor() << std::endl;
+        }
+    }
+};
+
+LibraryManager* LibraryManager::instance = nullptr;
+
+int main() {
+    LibraryManager* manager = LibraryManager::getInstance();
+    manager->addBook(Book("1984", "George Orwell"));
+    manager->addBook(Book("To Kill a Mockingbird", "Harper Lee"));
+    manager->listBooks();
+    manager->removeBook(Book("1984", "George Orwell"));
+    manager->listBooks();
+    return 0;
+}
+
+2- the Employee Management system using the Factory Pattern:
+cpp
+CopyEdit
+#include <iostream>
+#include <string>
+#include <memory>
+
+class Person {
+protected:
+    std::string name;
+public:
+    Person(const std::string& n) : name(n) {}
+    virtual ~Person() {}
+    virtual void display() const = 0;
+};
+
+class Employee : public Person {
+protected:
+    double salary;
+public:
+    Employee(const std::string& n, double s) : Person(n), salary(s) {}
+    virtual ~Employee() {}
+    virtual double getSalary() const {
+        return salary;
+    }
+    virtual Employee* clone() const = 0;
+    Employee operator+(const Employee& other) const {
+        return Employee(name + " & " + other.name, salary + other.salary);
+    }
+    void display() const override {
+        std::cout << name << ": $" << salary << std::endl;
+    }
+};
+
+class Manager : public Employee {
+public:
+    Manager(const std::string& n, double s) : Employee(n, s) {}
+    Manager* clone() const override {
+        return new Manager(*this);
+    }
+    void display() const override {
+        std::cout << "Manager - " << name << ": $" << salary << std::endl;
+    }
+};
+
+class Developer : public Employee {
+public:
+    Developer(const std::string& n, double s) : Employee(n, s) {}
+    Developer* clone() const override {
+        return new Developer(*this);
+    }
+    void display() const override {
+        std::cout << "Developer - " << name << ": $" << salary << std::endl;
+    }
+};
+
+class EmployeeFactory {
+public:
+    static std::unique_ptr<Employee> createEmployee(const std::string& role, const std::string& name, double salary) {
+        if (role == "Manager")
+            return std::make_unique<Manager>(name, salary);
+        else if (role == "Developer")
+            return std::make_unique<Developer>(name, salary);
+        else
+            return nullptr;
+    }
+};
+
+int main() {
+    auto emp1 = EmployeeFactory::createEmployee("Manager", "Alice", 90000);
+    auto emp2 = EmployeeFactory::createEmployee("Developer", "Bob", 80000);
+
+    emp1->display();
+    emp2->display();
+
+    Employee combined = *emp1 + *emp2;
+    combined.display();
+
+    return 0;
+}
+3- Observer Pattern to notify when the area of a shape changes:
+cpp
+CopyEdit
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+class Observer {
+public:
+    virtual void update(double area) = 0;
+    virtual ~Observer() {}
+};
+
+class Shape {
+protected:
+    std::vector<Observer*> observers;
+public:
+    virtual double area() const = 0;
+    virtual Shape* clone() const = 0;
+    void addObserver(Observer* obs) {
+        observers.push_back(obs);
+    }
+    void notifyObservers(double area) {
+        for (auto obs : observers) {
+            obs->update(area);
+        }
+    }
+    virtual ~Shape() {}
+    Shape& operator+(const Shape& other) {
+        double combinedArea = this->area() + other.area();
+        notifyObservers(combinedArea);
+        return *this;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r) : radius(r) {}
+    double area() const override {
+        return M_PI * radius * radius;
+    }
+    Circle* clone() const override {
+        return new Circle(*this);
+    }
+    void setRadius(double r) {
+        radius = r;
+        notifyObservers(area());
+    }
+};
+
+class Rectangle : public Shape {
+private:
+    double width, height;
+public:
+    Rectangle(double w, double h) : width(w), height(h) {}
+    double area() const override {
+        return width * height;
+    }
+    Rectangle* clone() const override {
+        return new Rectangle(*this);
+    }
+    void setDimensions(double w, double h) {
+        width = w;
+        height = h;
+        notifyObservers(area());
+    }
+};
+
+class Display : public Observer {
+public:
+    void update(double area) override {
+        std::cout << "Updated area: " << area << std::endl;
+    }
+};
+
+int main() {
+    Circle c(5);
+    Rectangle r(4, 6);
+    Display d;
+
+    c.addObserver(&d);
+    r.addObserver(&d);
+
+    c.setRadius(7);
+    r.setDimensions(10, 2);
+
+    c + r;
+
+    return 0;
+}
+4- Decorator Pattern applied to vehicle features, including < operator overloading to compare by cost:
+cpp
+CopyEdit
+#include <iostream>
+#include <string>
+#include <memory>
+
+class Vehicle {
+public:
+    virtual std::string getDescription() const = 0;
+    virtual double getCost() const = 0;
+    virtual int getFeatureCount() const = 0;
+    virtual ~Vehicle() {}
+    bool operator<(const Vehicle& other) const {
+        return getCost() < other.getCost();
+    }
+};
+
+class Car : public Vehicle {
+public:
+    std::string getDescription() const override {
+        return "Car";
+    }
+    double getCost() const override {
+        return 20000.0;
+    }
+    int getFeatureCount() const override {
+        return 0;
+    }
+};
+
+class Truck : public Vehicle {
+public:
+    std::string getDescription() const override {
+        return "Truck";
+    }
+    double getCost() const override {
+        return 30000.0;
+    }
+    int getFeatureCount() const override {
+        return 0;
+    }
+};
+
+class VehicleDecorator : public Vehicle {
+protected:
+    std::unique_ptr<Vehicle> vehicle;
+public:
+    VehicleDecorator(std::unique_ptr<Vehicle> v) : vehicle(std::move(v)) {}
+};
+
+class GPS : public VehicleDecorator {
+public:
+    GPS(std::unique_ptr<Vehicle> v) : VehicleDecorator(std::move(v)) {}
+    std::string getDescription() const override {
+        return vehicle->getDescription() + ", GPS";
+    }
+    double getCost() const override {
+        return vehicle->getCost() + 1500.0;
+    }
+    int getFeatureCount() const override {
+        return vehicle->getFeatureCount() + 1;
+    }
+};
+
+class AirConditioning : public VehicleDecorator {
+public:
+    AirConditioning(std::unique_ptr<Vehicle> v) : VehicleDecorator(std::move(v)) {}
+    std::string getDescription() const override {
+        return vehicle->getDescription() + ", Air Conditioning";
+    }
+    double getCost() const override {
+        return vehicle->getCost() + 2000.0;
+    }
+    int getFeatureCount() const override {
+        return vehicle->getFeatureCount() + 1;
+    }
+};
+
+int main() {
+    std::unique_ptr<Vehicle> v1 = std::make_unique<Car>();
+    v1 = std::make_unique<GPS>(std::move(v1));
+    v1 = std::make_unique<AirConditioning>(std::move(v1));
+
+    std::unique_ptr<Vehicle> v2 = std::make_unique<Truck>();
+    v2 = std::make_unique<GPS>(std::move(v2));
+
+    std::cout << "Vehicle 1: " << v1->getDescription() << " | Cost: " << v1->getCost() << " | Features: " << v1->getFeatureCount() << std::endl;
+    std::cout << "Vehicle 2: " << v2->getDescription() << " | Cost: " << v2->getCost() << " | Features: " << v2->getFeatureCount() << std::endl;
+
+    if (*v1 < *v2)
+        std::cout << "Vehicle 1 is cheaper.\n";
+    else
+        std::cout << "Vehicle 2 is cheaper.\n";
+
+    return 0;
+}
+5- Banking Transactions using the Command Pattern
+#include <iostream>
+#include <vector>
+#include <memory>
+
+class Account {
+public:
+    virtual void deposit(double amount) = 0;
+    virtual void withdraw(double amount) = 0;
+    virtual double getBalance() const = 0;
+    virtual ~Account() {}
+};
+
+class SavingsAccount : public Account {
+private:
+    double balance;
+public:
+    SavingsAccount() : balance(0.0) {}
+    void deposit(double amount) override {
+        balance += amount;
+    }
+    void withdraw(double amount) override {
+        if (amount <= balance)
+            balance -= amount;
+    }
+    double getBalance() const override {
+        return balance;
+    }
+    SavingsAccount& operator+=(double amount) {
+        deposit(amount);
+        return *this;
+    }
+};
+
+class Command {
+public:
+    virtual void execute() = 0;
+    virtual ~Command() {}
+};
+
+class DepositCommand : public Command {
+private:
+    Account* account;
+    double amount;
+public:
+    DepositCommand(Account* acc, double amt) : account(acc), amount(amt) {}
+    void execute() override {
+        account->deposit(amount);
+    }
+};
+
+class WithdrawCommand : public Command {
+private:
+    Account* account;
+    double amount;
+public:
+    WithdrawCommand(Account* acc, double amt) : account(acc), amount(amt) {}
+    void execute() override {
+        account->withdraw(amount);
+    }
+};
+
+class BalanceInquiryCommand : public Command {
+private:
+    Account* account;
+public:
+    BalanceInquiryCommand(Account* acc) : account(acc) {}
+    void execute() override {
+        std::cout << "Balance: " << account->getBalance() << std::endl;
+    }
+};
+
+class CommandInvoker {
+private:
+    std::vector<std::unique_ptr<Command>> history;
+public:
+    void executeCommand(std::unique_ptr<Command> cmd) {
+        cmd->execute();
+        history.push_back(std::move(cmd));
+    }
+};
+
+int main() {
+    SavingsAccount account;
+    CommandInvoker invoker;
+
+    invoker.executeCommand(std::make_unique<DepositCommand>(&account, 1000));
+    invoker.executeCommand(std::make_unique<WithdrawCommand>(&account, 200));
+    invoker.executeCommand(std::make_unique<BalanceInquiryCommand>(&account));
+
+    account += 300;
+    std::cout << "After += operation, balance: " << account.getBalance() << std::endl;
+
+    return 0;
+}
+
+6- 
+State Pattern for handling Product statuses (Available, OutOfStock, Discontinued), with > operator overloading to compare products by price:
+cpp
+CopyEdit
+#include <iostream>
+#include <string>
+#include <memory>
+
+class Product; // Forward declaration
+
+class ProductState {
+public:
+    virtual void handle(Product* product) = 0;
+    virtual std::string getStatus() const = 0;
+    virtual ~ProductState() {}
+};
+
+class Product {
+private:
+    std::unique_ptr<ProductState> state;
+    double price;
+public:
+    Product(double p) : price(p) {}
+    void setState(std::unique_ptr<ProductState> s) {
+        state = std::move(s);
+    }
+    void request() {
+        if (state)
+            state->handle(this);
+    }
+    std::string getStatus() const {
+        return state ? state->getStatus() : "Unknown";
+    }
+    double getPrice() const {
+        return price;
+    }
+    bool operator>(const Product& other) const {
+        return price > other.price;
+    }
+};
+
+class Available : public ProductState {
+public:
+    void handle(Product* product) override {
+        std::cout << "Product is available.\n";
+    }
+    std::string getStatus() const override {
+        return "Available";
+    }
+};
+
+class OutOfStock : public ProductState {
+public:
+    void handle(Product* product) override {
+        std::cout << "Product is currently out of stock.\n";
+    }
+    std::string getStatus() const override {
+        return "OutOfStock";
+    }
+};
+
+class Discontinued : public ProductState {
+public:
+    void handle(Product* product) override {
+        std::cout << "Product has been discontinued.\n";
+    }
+    std::string getStatus() const override {
+        return "Discontinued";
+    }
+};
+
+int main() {
+    Product p1(199.99);
+    Product p2(299.99);
+
+    p1.setState(std::make_unique<Available>());
+    p2.setState(std::make_unique<OutOfStock>());
+
+    p1.request();
+    p2.request();
+
+    std::cout << "Product 1 status: " << p1.getStatus() << ", price: $" << p1.getPrice() << std::endl;
+    std::cout << "Product 2 status: " << p2.getStatus() << ", price: $" << p2.getPrice() << std::endl;
+
+    if (p1 > p2)
+        std::cout << "Product 1 is more expensive.\n";
+    else
+        std::cout << "Product 2 is more expensive.\n";
+
+    return 0;
+}
+
+
+7-
+Strategy Pattern for a student grading system, allowing dynamic selection of grading strategies and overloading the += operator to add marks:
+cpp
+CopyEdit
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <numeric>
+
+class GradingStrategy {
+public:
+    virtual std::string getGrade(const std::vector<double>& marks) const = 0;
+    virtual ~GradingStrategy() {}
+};
+
+class PercentageGrading : public GradingStrategy {
+public:
+    std::string getGrade(const std::vector<double>& marks) const override {
+        if (marks.empty()) return "N/A";
+        double total = std::accumulate(marks.begin(), marks.end(), 0.0);
+        double percentage = total / marks.size();
+        return "Percentage: " + std::to_string(percentage) + "%";
+    }
+};
+
+class LetterGrading : public GradingStrategy {
+public:
+    std::string getGrade(const std::vector<double>& marks) const override {
+        if (marks.empty()) return "N/A";
+        double total = std::accumulate(marks.begin(), marks.end(), 0.0);
+        double average = total / marks.size();
+        if (average >= 90) return "Grade: A";
+        else if (average >= 80) return "Grade: B";
+        else if (average >= 70) return "Grade: C";
+        else if (average >= 60) return "Grade: D";
+        else return "Grade: F";
+    }
+};
+
+class Student {
+private:
+    std::string name;
+    std::vector<double> marks;
+    std::unique_ptr<GradingStrategy> strategy;
+public:
+    Student(const std::string& n) : name(n) {}
+    void setStrategy(std::unique_ptr<GradingStrategy> s) {
+        strategy = std::move(s);
+    }
+    void showGrade() const {
+        if (strategy)
+            std::cout << name << " - " << strategy->getGrade(marks) << std::endl;
+        else
+            std::cout << name << " - No grading strategy set.\n";
+    }
+    Student& operator+=(double mark) {
+        marks.push_back(mark);
+        return *this;
+    }
+};
+
+int main() {
+    Student s1("Alice");
+    s1 += 85;
+    s1 += 90;
+    s1 += 88;
+
+    s1.setStrategy(std::make_unique<PercentageGrading>());
+    s1.showGrade();
+
+    s1.setStrategy(std::make_unique<LetterGrading>());
+    s1.showGrade();
+
+    return 0;
+}
+
+8-
+ile system using the Composite Pattern, with + operator overloading to calculate the total size of files and directories:
+cpp
+CopyEdit
+#include <iostream>
+#include <vector>
+#include <memory>
+#include <string>
+
+class FileSystemComponent {
+public:
+    virtual std::string getName() const = 0;
+    virtual int getSize() const = 0;
+    virtual ~FileSystemComponent() {}
+    virtual FileSystemComponent& operator+(const FileSystemComponent& other) = 0;
+};
+
+class File : public FileSystemComponent {
+private:
+    std::string name;
+    int size;
+public:
+    File(const std::string& n, int s) : name(n), size(s) {}
+    std::string getName() const override {
+        return name;
+    }
+    int getSize() const override {
+        return size;
+    }
+    FileSystemComponent& operator+(const FileSystemComponent& other) override {
+        int totalSize = this->getSize() + other.getSize();
+        static File result("CombinedFile", totalSize);
+        return result;
+    }
+};
+
+class Directory : public FileSystemComponent {
+private:
+    std::string name;
+    std::vector<std::shared_ptr<FileSystemComponent>> components;
+public:
+    Directory(const std::string& n) : name(n) {}
+    void add(const std::shared_ptr<FileSystemComponent>& component) {
+        components.push_back(component);
+    }
+    std::string getName() const override {
+        return name;
+    }
+    int getSize() const override {
+        int total = 0;
+        for (const auto& c : components)
+            total += c->getSize();
+        return total;
+    }
+    FileSystemComponent& operator+(const FileSystemComponent& other) override {
+        int totalSize = this->getSize() + other.getSize();
+        static File result("CombinedDirectory", totalSize);
+        return result;
+    }
+};
+
+int main() {
+    auto file1 = std::make_shared<File>("file1.txt", 100);
+    auto file2 = std::make_shared<File>("file2.txt", 200);
+    auto file3 = std::make_shared<File>("file3.txt", 300);
+
+    auto dir1 = std::make_shared<Directory>("dir1");
+    dir1->add(file1);
+    dir1->add(file2);
+
+    auto dir2 = std::make_shared<Directory>("dir2");
+    dir2->add(file3);
+    dir2->add(dir1);
+
+    std::cout << dir2->getName() << " total size: " << dir2->getSize() << " bytes\n";
+
+    FileSystemComponent& combined = *dir1 + *file3;
+    std::cout << "Combined size: " << combined.getSize() << " bytes\n";
+
+    return 0;
+}
+
+9-
+Proxy Pattern for managing inventory access control, including == operator overloading to compare Items by name and ID:
+cpp
+CopyEdit
+#include <iostream>
+#include <string>
+#include <vector>
+#include <memory>
+
+class Item {
+protected:
+    std::string name;
+    int id;
+public:
+    Item(const std::string& n, int i) : name(n), id(i) {}
+    virtual void display() const = 0;
+    virtual bool operator==(const Item& other) const {
+        return (name == other.name && id == other.id);
+    }
+    virtual ~Item() {}
+    std::string getName() const { return name; }
+    int getId() const { return id; }
+};
+
+class StoreItem : public Item {
+private:
+    int quantity;
+public:
+    StoreItem(const std::string& n, int i, int q) : Item(n, i), quantity(q) {}
+    void display() const override {
+        std::cout << "Item: " << name << ", ID: " << id << ", Quantity: " << quantity << std::endl;
+    }
+};
+
+class InventoryAccess {
+public:
+    virtual void viewItems() const = 0;
+    virtual void addItem(const std::shared_ptr<Item>& item) = 0;
+    virtual ~InventoryAccess() {}
+};
+
+class RealInventory : public InventoryAccess {
+private:
+    std::vector<std::shared_ptr<Item>> items;
+public:
+    void viewItems() const override {
+        for (const auto& item : items)
+            item->display();
+    }
+    void addItem(const std::shared_ptr<Item>& item) override {
+        items.push_back(item);
+    }
+};
+
+class ProxyInventory : public InventoryAccess {
+private:
+    std::unique_ptr<RealInventory> realInventory;
+    std::string userRole;
+public:
+    ProxyInventory(const std::string& role) : userRole(role) {
+        realInventory = std::make_unique<RealInventory>();
+    }
+    void viewItems() const override {
+        realInventory->viewItems();
+    }
+    void addItem(const std::shared_ptr<Item>& item) override {
+        if (userRole == "Admin") {
+            realInventory->addItem(item);
+        } else {
+            std::cout << "Access Denied: Only Admins can add items.\n";
+        }
+    }
+};
+
+int main() {
+    ProxyInventory adminInventory("Admin");
+    ProxyInventory userInventory("User");
+
+    auto item1 = std::make_shared<StoreItem>("Laptop", 101, 10);
+    auto item2 = std::make_shared<StoreItem>("Monitor", 102, 5);
+
+    adminInventory.addItem(item1);
+    adminInventory.addItem(item2);
+    adminInventory.viewItems();
+
+    userInventory.viewItems();
+    userInventory.addItem(std::make_shared<StoreItem>("Keyboard", 103, 7));
+
+    std::cout << "Items equal? " << ((*item1 == *item2) ? "Yes" : "No") << std::endl;
+
+    return 0;
+}
+
+10-
+Abstract Factory Pattern for a transport system with factories LandTransportFactory and WaterTransportFactory, producing transport types like Bus, Train, and Boat. The + operator is overloaded to combine the capacities of two transport types.
+cpp
+CopyEdit
+#include <iostream>
+#include <memory>
+#include <string>
+
+class Transport {
+protected:
+    int capacity;
+public:
+    Transport(int c) : capacity(c) {}
+    virtual void info() const = 0;
+    virtual int getCapacity() const { return capacity; }
+    virtual Transport& operator+(const Transport& other) = 0;
+    virtual ~Transport() {}
+};
+
+class Bus : public Transport {
+public:
+    Bus(int c) : Transport(c) {}
+    void info() const override {
+        std::cout << "Bus with capacity: " << capacity << std::endl;
+    }
+    Transport& operator+(const Transport& other) override {
+        static Bus result(capacity + other.getCapacity());
+        return result;
+    }
+};
+
+class Train : public Transport {
+public:
+    Train(int c) : Transport(c) {}
+    void info() const override {
+        std::cout << "Train with capacity: " << capacity << std::endl;
+    }
+    Transport& operator+(const Transport& other) override {
+        static Train result(capacity + other.getCapacity());
+        return result;
+    }
+};
+
+class Boat : public Transport {
+public:
+    Boat(int c) : Transport(c) {}
+    void info() const override {
+        std::cout << "Boat with capacity: " << capacity << std::endl;
+    }
+    Transport& operator+(const Transport& other) override {
+        static Boat result(capacity + other.getCapacity());
+        return result;
+    }
+};
+
+class TransportFactory {
+public:
+    virtual std::unique_ptr<Transport> createPrimary() = 0;
+    virtual std::unique_ptr<Transport> createSecondary() = 0;
+    virtual ~TransportFactory() {}
+};
+
+class LandTransportFactory : public TransportFactory {
+public:
+    std::unique_ptr<Transport> createPrimary() override {
+        return std::make_unique<Bus>(50);
+    }
+    std::unique_ptr<Transport> createSecondary() override {
+        return std::make_unique<Train>(200);
+    }
+};
+
+class WaterTransportFactory : public TransportFactory {
+public:
+    std::unique_ptr<Transport> createPrimary() override {
+        return std::make_unique<Boat>(100);
+    }
+    std::unique_ptr<Transport> createSecondary() override {
+        return std::make_unique<Boat>(150);
+    }
+};
+
+int main() {
+    std::unique_ptr<TransportFactory> landFactory = std::make_unique<LandTransportFactory>();
+    std::unique_ptr<Transport> bus = landFactory->createPrimary();
+    std::unique_ptr<Transport> train = landFactory->createSecondary();
+
+    std::unique_ptr<TransportFactory> waterFactory = std::make_unique<WaterTransportFactory>();
+    std::unique_ptr<Transport> boat1 = waterFactory->createPrimary();
+    std::unique_ptr<Transport> boat2 = waterFactory->createSecondary();
+
+    bus->info();
+    train->info();
+    boat1->info();
+    boat2->info();
+
+    Transport& combined = *boat1 + *boat2;
+    combined.info();
+
+    return 0;
+}
+
+
