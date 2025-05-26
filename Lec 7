@@ -79,28 +79,9 @@ int main() {
     Shape* s = factory.createShape('C');
     s->draw();
     return 0;
-}
-Would you like me to continue with the rest (Exercises 3 to 12)?
-
-
-
-
-
-
-
-You said:
-yes
-
-
-ChatGPT said:
-Here are the next exercises, 3 through 12, continuing with simple C++ implementations in Q&A format without using namespace std.
-
 ✅ Exercise 3: Observer Pattern
 Q: How do you implement an observer pattern for a weather system?
 
-cpp
-Copy
-Edit
 #include <iostream>
 #include <vector>
 #include <cstdlib>
