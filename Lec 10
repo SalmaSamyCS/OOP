@@ -1,0 +1,163 @@
+Q1: What is the purpose of C++ streams, and why are they essential in programming?
+A:
+C++ streams allow programs to perform input and output operations using objects like cin, cout, ifstream, and ofstream. They provide a consistent way to read from and write to different sources like the console, files, or memory.
+
+Q2: What is the difference between text mode and binary mode in C++ streams?
+A:
+
+Text mode treats data as human-readable text (e.g., letters, digits).
+
+Binary mode treats data as raw bytes (e.g., images, audio).
+
+In binary mode, no newline or character translation occurs.
+
+Q3: How do you open a text file for reading in C++ using streams? Provide an example.
+cpp
+Copy
+Edit
+#include <iostream>
+#include <fstream>
+
+void readTextFile() {
+    std::ifstream file("example.txt");
+    if (file.is_open()) {
+        std::cout << "File opened successfully.\n";
+        file.close();
+    }
+}
+Q4: How can you check if a file stream was opened successfully? What happens if it fails?
+A:
+Use is_open() or check the stream object directly. If it fails, the stream remains in an invalid state and no read/write will occur.
+
+cpp
+Copy
+Edit
+std::ifstream file("example.txt");
+if (!file) {
+    std::cout << "Failed to open file.\n";
+}
+Q5: Describe writing text to a file using ofstream. Provide an example.
+cpp
+Copy
+Edit
+#include <fstream>
+
+void writeTextFile() {
+    std::ofstream file("output.txt");
+    if (file) {
+        file << "Hello, world!\n";
+        file.close();
+    }
+}
+Q6: How do you read text from a file using ifstream? Provide an example.
+cpp
+Copy
+Edit
+#include <iostream>
+#include <fstream>
+#include <string>
+
+void readFile() {
+    std::ifstream file("output.txt");
+    std::string line;
+    while (getline(file, line)) {
+        std::cout << line << "\n";
+    }
+    file.close();
+}
+Q7: What is EOF? How do you detect it in C++?
+A:
+EOF (End-of-File) indicates no more data is available to read. Use .eof() or check read operations.
+
+cpp
+Copy
+Edit
+while (!file.eof()) {
+    // or use getline() or file >> var
+}
+Q8: What are stream states? How are they used?
+A:
+
+good() – No errors.
+
+eof() – End of file reached.
+
+fail() – Logical error (e.g., reading string into an int).
+
+bad() – Read/write operation failed.
+
+Example:
+
+cpp
+Copy
+Edit
+if (file.fail()) {
+    std::cout << "Logical error reading file.\n";
+}
+Q9: How do you open a binary file for writing in C++? Provide an example.
+cpp
+Copy
+Edit
+#include <fstream>
+
+void writeBinary() {
+    std::ofstream file("data.bin", std::ios::binary);
+    int x = 123;
+    file.write(reinterpret_cast<char*>(&x), sizeof(x));
+    file.close();
+}
+Q10: Purpose of write() and read() for binary files. Example?
+A:
+They handle raw memory as bytes.
+
+cpp
+Copy
+Edit
+// Writing
+file.write(reinterpret_cast<char*>(&value), sizeof(value));
+
+// Reading
+file.read(reinterpret_cast<char*>(&value), sizeof(value));
+Q11: Why is error handling important in file streams?
+A:
+It ensures the program behaves correctly even if the file doesn't exist or is unreadable.
+Mechanisms: Check states using fail(), bad(), is_open(), or use exceptions with exceptions().
+
+Q12: How to read user input from console and write to file? Example:
+cpp
+Copy
+Edit
+#include <iostream>
+#include <fstream>
+#include <string>
+
+void inputToFile() {
+    std::ofstream file("user_input.txt");
+    std::string line;
+    std::cout << "Enter text (type 'exit' to finish):\n";
+    while (getline(std::cin, line)) {
+        if (line == "exit") break;
+        file << line << "\n";
+    }
+    file.close();
+}
+Q13: What to consider when sharing binary files across systems?
+A:
+Different systems may use different endianness (byte order). Convert to a standard format (e.g., little-endian) before saving or use serialization libraries.
+
+Q14: How to close a file? Why is it important?
+A:
+Use .close().
+Closing ensures data is written and resources are freed.
+Example: file.close();
+
+Q15: Advantages of C++ streams over C-style file functions:
+A:
+
+Type-safe and object-oriented.
+
+Easier to use with overloaded operators (<<, >>).
+
+Automatically handles resource cleanup using RAII.
+
+Better error detection with stream states.
