@@ -1,0 +1,164 @@
+ask 1: Vector Operations
+cpp
+Copy
+Edit
+#include <iostream>
+#include <vector>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+
+    // Print original vector
+    for (int i = 0; i < numbers.size(); i++) {
+        std::cout << numbers[i] << " ";
+    }
+    std::cout << "\n";
+
+    // Add two elements
+    numbers.push_back(6);
+    numbers.push_back(7);
+
+    // Print modified vector
+    for (int i = 0; i < numbers.size(); i++) {
+        std::cout << numbers[i] << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
+✅ Task 2: List Operations
+cpp
+Copy
+Edit
+#include <iostream>
+#include <list>
+
+int main() {
+    std::list<char> characters = {'A', 'B', 'C', 'D', 'E'};
+
+    // Reverse print using reverse iterator
+    for (std::list<char>::reverse_iterator it = characters.rbegin(); it != characters.rend(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+
+    // Insert 'F' at beginning
+    characters.push_front('F');
+
+    // Print modified list
+    for (std::list<char>::iterator it = characters.begin(); it != characters.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
+✅ Task 3: Map Operations
+cpp
+Copy
+Edit
+#include <iostream>
+#include <map>
+#include <string>
+
+int main() {
+    std::map<std::string, int> grades;
+    grades["Alice"] = 90;
+    grades["Bob"] = 85;
+    grades["Charlie"] = 78;
+    grades["David"] = 92;
+    grades["Eve"] = 88;
+
+    // Print map
+    for (std::map<std::string, int>::iterator it = grades.begin(); it != grades.end(); ++it) {
+        std::cout << it->first << ": " << it->second << "\n";
+    }
+
+    // Remove one entry
+    grades.erase("Charlie");
+
+    std::cout << "After removal:\n";
+    for (std::map<std::string, int>::iterator it = grades.begin(); it != grades.end(); ++it) {
+        std::cout << it->first << ": " << it->second << "\n";
+    }
+
+    return 0;
+}
+✅ Task 4: Set Operations
+cpp
+Copy
+Edit
+#include <iostream>
+#include <set>
+
+int main() {
+    std::set<double> scores = {85.5, 90.0, 76.3, 88.2, 92.1};
+
+    // Print set
+    for (std::set<double>::iterator it = scores.begin(); it != scores.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+
+    // Remove a specific score
+    scores.erase(88.2);
+
+    // Print modified set
+    for (std::set<double>::iterator it = scores.begin(); it != scores.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << "\n";
+
+    return 0;
+}
+✅ Task 5: Container Algorithms
+cpp
+Copy
+Edit
+#include <iostream>
+#include <vector>
+#include <list>
+#include <algorithm>
+
+int main() {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    std::list<int> values = {2, 3, 2, 4, 2};
+
+    // Find value in vector
+    std::vector<int>::iterator it = std::find(numbers.begin(), numbers.end(), 3);
+    if (it != numbers.end()) {
+        std::cout << "Found: " << *it << "\n";
+    } else {
+        std::cout << "Not found\n";
+    }
+
+    // Count occurrences in list
+    int count = std::count(values.begin(), values.end(), 2);
+    std::cout << "2 appears " << count << " times\n";
+
+    return 0;
+}
+✅ Theory Questions
+1. Primary difference between std::vector and std::list:
+Memory Allocation:
+
+vector uses contiguous memory, meaning all elements are stored in a single block.
+
+list uses non-contiguous memory (linked list), each element points to the next.
+
+Element Access:
+
+vector provides random access (fast access using index).
+
+list provides only sequential access (you must traverse to reach an element).
+
+2. Purpose and Advantage of std::unordered_set:
+Purpose:
+std::unordered_set is used to store unique elements with fast access time, implemented using a hash table.
+
+Advantage over std::set:
+
+unordered_set has average constant time O(1) for insert, delete, and search.
+
+set has logarithmic time O(log n) since it is usually implemented as a balanced binary tree.
+
