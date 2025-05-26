@@ -1,1 +1,551 @@
-no questions
+ Exercise 1: Singleton Pattern
+Q: How do you implement a Singleton for a Configuration Manager?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <string>
+
+class ConfigManager {
+private:
+    static ConfigManager* instance;
+    std::string config;
+
+    ConfigManager() {
+        config = "App configuration loaded.";
+    }
+
+public:
+    static ConfigManager* getInstance() {
+        if (instance == 0) {
+            instance = new ConfigManager();
+        }
+        return instance;
+    }
+
+    void showConfig() {
+        std::cout << config << "\n";
+    }
+};
+
+ConfigManager* ConfigManager::instance = 0;
+
+int main() {
+    ConfigManager* cm = ConfigManager::getInstance();
+    cm->showConfig();
+    return 0;
+}
+✅ Exercise 2: Factory Method Pattern
+Q: How do you create a simple shape factory?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class Shape {
+public:
+    virtual void draw() = 0;
+};
+
+class Circle : public Shape {
+public:
+    void draw() { std::cout << "Drawing Circle\n"; }
+};
+
+class Rectangle : public Shape {
+public:
+    void draw() { std::cout << "Drawing Rectangle\n"; }
+};
+
+class Triangle : public Shape {
+public:
+    void draw() { std::cout << "Drawing Triangle\n"; }
+};
+
+class ShapeFactory {
+public:
+    Shape* createShape(char type) {
+        if (type == 'C') return new Circle();
+        if (type == 'R') return new Rectangle();
+        if (type == 'T') return new Triangle();
+        return 0;
+    }
+};
+
+int main() {
+    ShapeFactory factory;
+    Shape* s = factory.createShape('C');
+    s->draw();
+    return 0;
+}
+Would you like me to continue with the rest (Exercises 3 to 12)?
+
+
+
+
+
+
+
+You said:
+yes
+
+
+ChatGPT said:
+Here are the next exercises, 3 through 12, continuing with simple C++ implementations in Q&A format without using namespace std.
+
+✅ Exercise 3: Observer Pattern
+Q: How do you implement an observer pattern for a weather system?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+
+class Observer {
+public:
+    virtual void update(int temp) = 0;
+};
+
+class WeatherStation {
+private:
+    std::vector<Observer*> observers;
+    int temperature;
+
+public:
+    void addObserver(Observer* o) {
+        observers.push_back(o);
+    }
+
+    void setTemperature(int temp) {
+        temperature = temp;
+        for (int i = 0; i < observers.size(); i++) {
+            observers[i]->update(temp);
+        }
+    }
+};
+
+class Display : public Observer {
+public:
+    void update(int temp) {
+        std::cout << "Temperature: " << temp << "\n";
+    }
+};
+
+int main() {
+    WeatherStation station;
+    Display d;
+    station.addObserver(&d);
+    station.setTemperature(rand() % 100);
+    return 0;
+}
+✅ Exercise 4: Decorator Pattern
+Q: How do you add formatting to text using the decorator pattern?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <string>
+
+class Text {
+public:
+    virtual std::string getText() = 0;
+};
+
+class PlainText : public Text {
+public:
+    std::string getText() {
+        return "Hello";
+    }
+};
+
+class Bold : public Text {
+private:
+    Text* text;
+public:
+    Bold(Text* t) { text = t; }
+    std::string getText() {
+        return "<b>" + text->getText() + "</b>";
+    }
+};
+
+class Italic : public Text {
+private:
+    Text* text;
+public:
+    Italic(Text* t) { text = t; }
+    std::string getText() {
+        return "<i>" + text->getText() + "</i>";
+    }
+};
+
+int main() {
+    Text* t = new Italic(new Bold(new PlainText()));
+    std::cout << t->getText() << "\n";
+    return 0;
+}
+✅ Exercise 5: Command Pattern
+Q: How do you design a remote control using the command pattern?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class Command {
+public:
+    virtual void execute() = 0;
+};
+
+class Light {
+public:
+    void on() { std::cout << "Light ON\n"; }
+};
+
+class LightOnCommand : public Command {
+private:
+    Light* light;
+public:
+    LightOnCommand(Light* l) { light = l; }
+    void execute() {
+        light->on();
+    }
+};
+
+class RemoteControl {
+private:
+    Command* command;
+public:
+    void setCommand(Command* c) { command = c; }
+    void pressButton() { command->execute(); }
+};
+
+int main() {
+    Light light;
+    LightOnCommand lightOn(&light);
+    RemoteControl remote;
+    remote.setCommand(&lightOn);
+    remote.pressButton();
+    return 0;
+}
+✅ Exercise 6: State Pattern
+Q: How do you model a vending machine using the state pattern?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class State {
+public:
+    virtual void handle() = 0;
+};
+
+class NoCoin : public State {
+public:
+    void handle() { std::cout << "Insert coin.\n"; }
+};
+
+class HasCoin : public State {
+public:
+    void handle() { std::cout << "Dispensing item.\n"; }
+};
+
+class VendingMachine {
+private:
+    State* state;
+public:
+    void setState(State* s) { state = s; }
+    void request() { state->handle(); }
+};
+
+int main() {
+    VendingMachine vm;
+    NoCoin noCoin;
+    HasCoin hasCoin;
+
+    vm.setState(&noCoin);
+    vm.request();
+
+    vm.setState(&hasCoin);
+    vm.request();
+
+    return 0;
+}
+✅ Exercise 7: Strategy Pattern
+Q: How do you implement different payment strategies?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class PaymentStrategy {
+public:
+    virtual void pay() = 0;
+};
+
+class CreditCard : public PaymentStrategy {
+public:
+    void pay() { std::cout << "Paid with credit card.\n"; }
+};
+
+class PayPal : public PaymentStrategy {
+public:
+    void pay() { std::cout << "Paid with PayPal.\n"; }
+};
+
+class Bitcoin : public PaymentStrategy {
+public:
+    void pay() { std::cout << "Paid with Bitcoin.\n"; }
+};
+
+class PaymentProcessor {
+private:
+    PaymentStrategy* strategy;
+public:
+    void setStrategy(PaymentStrategy* s) { strategy = s; }
+    void processPayment() { strategy->pay(); }
+};
+
+int main() {
+    PaymentProcessor processor;
+    CreditCard cc;
+    processor.setStrategy(&cc);
+    processor.processPayment();
+    return 0;
+}
+✅ Exercise 8: Composite Pattern
+Q: How do you implement a file system using the composite pattern?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <vector>
+#include <string>
+
+class FileSystem {
+public:
+    virtual int getSize() = 0;
+};
+
+class File : public FileSystem {
+private:
+    int size;
+public:
+    File(int s) { size = s; }
+    int getSize() { return size; }
+};
+
+class Directory : public FileSystem {
+private:
+    std::vector<FileSystem*> items;
+public:
+    void add(FileSystem* f) { items.push_back(f); }
+    int getSize() {
+        int total = 0;
+        for (int i = 0; i < items.size(); i++)
+            total += items[i]->getSize();
+        return total;
+    }
+};
+
+int main() {
+    File f1(100), f2(200);
+    Directory dir;
+    dir.add(&f1);
+    dir.add(&f2);
+    std::cout << "Total size: " << dir.getSize() << "\n";
+    return 0;
+}
+✅ Exercise 9: Builder Pattern
+Q: How do you create a burger ordering system using the builder pattern?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <string>
+
+class Burger {
+public:
+    std::string parts;
+    void show() { std::cout << "Burger: " << parts << "\n"; }
+};
+
+class BurgerBuilder {
+private:
+    Burger burger;
+public:
+    BurgerBuilder* addPatty(std::string type) {
+        burger.parts += type + " patty, ";
+        return this;
+    }
+
+    BurgerBuilder* addTopping(std::string topping) {
+        burger.parts += topping + ", ";
+        return this;
+    }
+
+    BurgerBuilder* addSauce(std::string sauce) {
+        burger.parts += sauce + " sauce, ";
+        return this;
+    }
+
+    Burger build() { return burger; }
+};
+
+int main() {
+    Burger b = BurgerBuilder().addPatty("Beef")->addTopping("Lettuce")->addSauce("Ketchup")->build();
+    b.show();
+    return 0;
+}
+✅ Exercise 10: Proxy Pattern
+Q: How do you restrict access to a database using a proxy?
+
+cpp
+Copy
+Edit
+#include <iostream>
+#include <string>
+
+class Database {
+public:
+    virtual void access() = 0;
+};
+
+class RealDatabase : public Database {
+public:
+    void access() {
+        std::cout << "Accessing database...\n";
+    }
+};
+
+class ProxyDatabase : public Database {
+private:
+    RealDatabase realDB;
+    std::string user;
+public:
+    ProxyDatabase(std::string u) { user = u; }
+    void access() {
+        if (user == "admin")
+            realDB.access();
+        else
+            std::cout << "Access denied.\n";
+    }
+};
+
+int main() {
+    ProxyDatabase db("admin");
+    db.access();
+    return 0;
+}
+✅ Exercise 11: Abstract Factory Pattern
+Q: How do you create families of shapes using abstract factory?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class Circle {
+public:
+    virtual void draw() = 0;
+};
+
+class Rectangle {
+public:
+    virtual void draw() = 0;
+};
+
+class SimpleCircle : public Circle {
+public:
+    void draw() { std::cout << "Simple Circle\n"; }
+};
+
+class FancyCircle : public Circle {
+public:
+    void draw() { std::cout << "Fancy Circle\n"; }
+};
+
+class SimpleRectangle : public Rectangle {
+public:
+    void draw() { std::cout << "Simple Rectangle\n"; }
+};
+
+class FancyRectangle : public Rectangle {
+public:
+    void draw() { std::cout << "Fancy Rectangle\n"; }
+};
+
+class ShapeFactory {
+public:
+    virtual Circle* createCircle() = 0;
+    virtual Rectangle* createRectangle() = 0;
+};
+
+class SimpleFactory : public ShapeFactory {
+public:
+    Circle* createCircle() { return new SimpleCircle(); }
+    Rectangle* createRectangle() { return new SimpleRectangle(); }
+};
+
+class FancyFactory : public ShapeFactory {
+public:
+    Circle* createCircle() { return new FancyCircle(); }
+    Rectangle* createRectangle() { return new FancyRectangle(); }
+};
+
+int main() {
+    ShapeFactory* factory = new FancyFactory();
+    Circle* c = factory->createCircle();
+    Rectangle* r = factory->createRectangle();
+    c->draw();
+    r->draw();
+    return 0;
+}
+✅ Exercise 12: Template Method Pattern
+Q: How do you create a report generator with a template method?
+
+cpp
+Copy
+Edit
+#include <iostream>
+
+class Report {
+public:
+    void generate() {
+        header();
+        content();
+        footer();
+    }
+
+    virtual void content() = 0;
+
+    void header() { std::cout << "Report Header\n"; }
+    void footer() { std::cout << "Report Footer\n"; }
+};
+
+class PDFReport : public Report {
+public:
+    void content() { std::cout << "PDF content\n"; }
+};
+
+class HTMLReport : public Report {
+public:
+    void content() { std::cout << "HTML content\n"; }
+};
+
+int main() {
+    PDFReport pdf;
+    pdf.generate();
+
+    HTMLReport html;
+    html.generate();
+    return 0;
+}
