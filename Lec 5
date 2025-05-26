@@ -1,0 +1,211 @@
+Q1: What is operator overloading in C++?
+A: Operator overloading in C++ allows you to redefine the way operators work for user-defined types (like classes). It lets you use operators like +, -, == with objects.
+
+Q2: Why is operator overloading useful in C++? Give an example.
+A: It improves code readability and makes code look natural.
+Example: If you have a Complex class, writing c1 + c2 is clearer than c1.add(c2).
+
+Q3: What are the limitations or restrictions of operator overloading?
+A:
+
+You can’t create new operators.
+
+Some operators like ::, ., .*, and sizeof can’t be overloaded.
+
+Overloaded operators must have at least one operand as a user-defined type.
+
+Q4 & Q5: Complex class with + and - operator
+cpp
+Copy
+Edit
+#include <iostream>
+
+class Complex {
+public:
+    double real, imag;
+
+    Complex(double r = 0, double i = 0) : real(r), imag(i) {}
+
+    Complex operator+(const Complex& other) {
+        return Complex(real + other.real, imag + other.imag);
+    }
+
+    Complex operator-(const Complex& other) {
+        return Complex(real - other.real, imag - other.imag);
+    }
+
+    void display() {
+        std::cout << real << " + " << imag << "i\n";
+    }
+};
+Q6 & Q7: Date class with == and < operator
+cpp
+Copy
+Edit
+class Date {
+public:
+    int day, month, year;
+
+    Date(int d = 1, int m = 1, int y = 2000) : day(d), month(m), year(y) {}
+
+    bool operator==(const Date& other) {
+        return (day == other.day && month == other.month && year == other.year);
+    }
+
+    bool operator<(const Date& other) {
+        if (year != other.year) return year < other.year;
+        if (month != other.month) return month < other.month;
+        return day < other.day;
+    }
+};
+Q8 & Q9: Book class with << operator
+cpp
+Copy
+Edit
+#include <string>
+
+class Book {
+public:
+    std::string title, author, isbn;
+
+    Book(std::string t, std::string a, std::string i) : title(t), author(a), isbn(i) {}
+
+    friend std::ostream& operator<<(std::ostream& os, const Book& b) {
+        os << "Title: " << b.title << ", Author: " << b.author << ", ISBN: " << b.isbn;
+        return os;
+    }
+};
+
+// Demonstration:
+void showBook() {
+    Book b("1984", "George Orwell", "123456789");
+    std::cout << b << std::endl;
+}
+Q10 & Q11: Matrix class with [] operator
+cpp
+Copy
+Edit
+class Matrix {
+private:
+    int** data;
+    int rows, cols;
+
+public:
+    Matrix(int r, int c) : rows(r), cols(c) {
+        data = new int*[r];
+        for (int i = 0; i < r; ++i)
+            data[i] = new int[c];
+    }
+
+    int* operator[](int index) {
+        return data[index];
+    }
+
+    ~Matrix() {
+        for (int i = 0; i < rows; ++i)
+            delete[] data[i];
+        delete[] data;
+    }
+};
+
+// Example:
+void useMatrix() {
+    Matrix m(2, 2);
+    m[0][0] = 1;
+    m[0][1] = 2;
+    m[1][0] = 3;
+    m[1][1] = 4;
+    std::cout << m[1][1] << std::endl; // Output: 4
+}
+Q12 & Q13: Counter class with () operator
+cpp
+Copy
+Edit
+class Counter {
+private:
+    int count;
+
+public:
+    Counter(int c = 0) : count(c) {}
+
+    void operator()(int value) {
+        count += value;
+    }
+
+    int getCount() const {
+        return count;
+    }
+};
+
+// Example:
+void useCounter() {
+    Counter c;
+    c(5);
+    std::cout << c.getCount() << std::endl; // Output: 5
+}
+Q14 & Q15: Temperature class with conversion to Celsius
+cpp
+Copy
+Edit
+class Temperature {
+private:
+    float fahrenheit;
+
+public:
+    Temperature(float f) : fahrenheit(f) {}
+
+    operator float() const {
+        return (fahrenheit - 32) * 5 / 9;
+    }
+};
+
+// Example:
+void convertTemp() {
+    Temperature t(98.6f);
+    float celsius = t; // Implicit conversion
+    std::cout << "Celsius: " << celsius << std::endl;
+}
+Q16: 2D Vector class with scalar multiplication
+cpp
+Copy
+Edit
+class Vector2D {
+public:
+    float x, y;
+
+    Vector2D(float xVal = 0, float yVal = 0) : x(xVal), y(yVal) {}
+
+    Vector2D operator*(float scalar) {
+        return Vector2D(x * scalar, y * scalar);
+    }
+};
+Q17: Complex division
+cpp
+Copy
+Edit
+class ComplexDiv {
+public:
+    double real, imag;
+
+    ComplexDiv(double r = 0, double i = 0) : real(r), imag(i) {}
+
+    ComplexDiv operator/(const ComplexDiv& other) {
+        double denom = other.real * other.real + other.imag * other.imag;
+        double r = (real * other.real + imag * other.imag) / denom;
+        double i = (imag * other.real - real * other.imag) / denom;
+        return ComplexDiv(r, i);
+    }
+};
+Q18: Three best practices when overloading operators
+A:
+
+Overload operators only when it makes logical sense.
+
+Maintain expected behavior (e.g., == should reflect equality).
+
+Use const and reference where needed to avoid unnecessary copies.
+
+Q19: Why is consistency important in operator overloading?
+A:
+Inconsistent behavior confuses users.
+Example: If a == b returns true but !(a < b || b < a) is false, it breaks expectations.
