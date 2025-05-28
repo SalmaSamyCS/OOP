@@ -1,0 +1,135 @@
+Q1)  carrr 2ddd, 3dddd
+#include <iostream>
+#include <cstdlib>   // for rand()
+#include <ctime>     // for seeding rand()
+using namespace std;
+
+class car2D {
+protected:
+    double p1;
+    double p2;
+    double movementProb;
+
+public:
+    car2D(double x, double y) : p1(x), p2(y) {}
+
+    virtual void moveEast() {
+        movementProb = 0.2;
+        if ((double) rand() / RAND_MAX < movementProb) {
+            p1 += 1; // Move one step east
+            cout << "Moved East" << endl;
+        } else {
+            cout << "Did not move East" << endl;
+        }
+    }
+
+    virtual void moveWest() {
+        movementProb = 0.3;
+        if ((double) rand() / RAND_MAX < movementProb) {
+            p1 -= 1; // Move one step west
+            cout << "Moved West" << endl;
+        } else {
+            cout << "Did not move West" << endl;
+        }
+    }
+
+    void printPosition() const {
+        cout << "Position: (" << p1 << ", " << p2 << ")" << endl;
+    }
+
+    virtual ~car2D() {} // Virtual destructor
+};
+
+class car3D : public car2D {
+private:
+    double p3;
+
+public:
+    car3D(double x, double y, double z) : car2D(x, y), p3(z) {}
+
+    void moveEast() override {
+        movementProb = 0.2;
+        if ((double) rand() / RAND_MAX < movementProb) {
+            p1 += 1;
+            cout << "3D car moved East" << endl;
+        } else {
+            cout << "3D car did not move East" << endl;
+        }
+    }
+
+    void moveWest() override {
+        movementProb = 0.3;
+        if ((double) rand() / RAND_MAX < movementProb) {
+            p1 -= 1;
+            cout << "3D car moved West" << endl;
+        } else {
+            cout << "3D car did not move West" << endl;
+        }
+    }
+
+    void printPosition() const {
+        cout << "3D Position: (" << p1 << ", " << p2 << ", " << p3 << ")" << endl;
+    }
+};
+
+int main() {
+    srand(time(0)); // Seed random number generator
+
+    car2D c1(2, 3);
+    c1.moveEast();
+    c1.moveWest();
+    c1.printPosition();
+
+    car3D c3(5, 5, 5);
+    c3.moveEast();
+    c3.moveWest();
+    c3.printPosition();
+
+    return 0;
+}
+Q2)
+#include <iostream>
+using namespace std;
+
+class Time {
+private:
+    int hours, minutes, seconds;
+
+public:
+    Time() {
+        hours = minutes = seconds = 1;
+    }
+
+    Time(int h, int m, int s) {
+        hours = h;
+        minutes = m;
+        seconds = s;
+    }
+
+    void display() const {
+        cout << (hours < 10 ? "0" : "") << hours << " : "
+             << (minutes < 10 ? "0" : "") << minutes << " : "
+             << (seconds < 10 ? "0" : "") << seconds << endl;
+    }
+
+    Time addTime(const Time& t) const {
+        Time result;
+        result.seconds = seconds + t.seconds;
+        result.minutes = minutes + t.minutes + result.seconds / 60;
+        result.seconds %= 60;
+        result.hours = hours + t.hours + result.minutes / 60;
+        result.minutes %= 60;
+        result.hours %= 24;
+        return result;
+    }
+};
+
+int main() {
+    const Time t1(5, 6, 3);
+    const Time t2(3, 2, 1);
+    Time t3;
+    t3 = t1.addTime(t2);
+    t3.display();
+
+    return 0;
+}
