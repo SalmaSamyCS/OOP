@@ -1,0 +1,72 @@
+q1)b)#include <iostream>
+#include <vector>
+using namespace std;
+
+class plugin{
+    public:
+    virtual void run(){
+        cout << "base class plugin is running "<< endl;
+    }
+    virtual ~plugin(){}
+};
+class AudioPlugin : public plugin{
+    public:
+    void run() override{
+        cout << "audio run" << endl;
+    }
+};
+class VideoPlugin : public plugin{
+    public:
+    void run() override{
+        cout << "video run" << endl;
+    }
+};
+int main() {
+    vector <plugin*> plugins;
+    plugins.push_back(new plugin);
+    plugins.push_back(new AudioPlugin);
+    plugins.push_back (new VideoPlugin);
+    
+    for (int i =0; i<plugins.size(); ++i){
+         plugins[i]->run();
+    }
+    
+    
+
+    return 0;
+}
+q2)b)#include <iostream>
+using namespace std;
+
+class SafeArr {
+private:
+    const static int LIMIT = 10000;
+    int arr[LIMIT];
+
+public:
+    void Add(int index, int x) {
+        if (index < 0 || index >= LIMIT) {
+            cout << "Index out of bounds\n";
+            return;
+        }
+        arr[index] = x;
+    }
+
+    int Get(int index) {
+        if (index < 0 || index >= LIMIT) {
+            cout << "Index out of bounds\n";
+            return -1;
+        }
+        return arr[index];
+    }
+};
+
+int main() {
+    SafeArr a1;
+    a1.Add(0, 5);
+    a1.Add(10000, 10);  // Should print error
+    cout << a1.Get(0) << endl;  // Output: 5
+    cout << a1.Get(1) << endl;  // Output: 0 (uninitialized but inside bounds)
+    return 0;
+}
+
