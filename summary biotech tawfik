@@ -1,0 +1,342 @@
+Biotechnology Overview
+Biotechnology uses biological systems, living organisms, or their parts to develop new products.
+
+Examples: Brewing and baking bread (use of yeast).
+
+Four main types of biotechnology:
+
+Red: Medical
+
+White: Industrial
+
+Green: Environmental
+
+Blue: Marine
+
+Alexander Fleming & Penicillin
+Discovered penicillin in 1928 from Penicillium rubens mold.
+
+Called it the "single greatest victory ever achieved over disease."
+
+Shared 1945 Nobel Prize with Howard Florey and Ernst Chain.
+
+Also discovered enzyme lysozyme in 1922 and bacterium Micrococcus luteus.
+
+Griffith's Experiment (1928)
+Studied Streptococcus pneumoniae (S and R strains).
+
+S strain: Virulent, has polysaccharide coat.
+
+R strain: Harmless, no coat.
+
+Found that heat-killed S strain + live R strain → mice died → live S strain found in blood.
+
+Concluded a "transforming principle" converted R to S strain.
+
+Avery–MacLeod–McCarty Experiment (1944)
+Goal: Identify Griffith's "transforming principle."
+
+Removed proteins, RNA, and finally DNA from heat-killed S extract.
+
+Only DNA removal stopped transformation of R strain.
+
+Concluded DNA is the transforming (genetic) material, not protein.
+
+Hershey–Chase Experiment (1952)
+Used bacteriophages (viruses made of DNA & protein).
+
+Labeled DNA with radioactive phosphorus-32 (³²P).
+
+Labeled protein with radioactive sulfur-35 (³⁵S).
+
+After infection & centrifugation:
+
+³²P (DNA) found inside bacterial cells (pellet).
+
+³⁵S (protein) stayed outside (supernatant).
+
+Conclusion: DNA, not protein, is genetic material.
+
+Gene Transfer Mechanisms
+1. Vertical Gene Transfer
+
+From parent to offspring.
+
+2. Horizontal Gene Transfer (HGT or LGT)
+
+Between individuals of same/different species.
+
+Major driver of evolution, virulence, and antibiotic resistance.
+
+Mechanisms:
+
+a. Transduction
+
+Bacteriophage injects DNA into bacteria.
+
+May accidentally transfer bacterial genes (e.g., antibiotic resistance).
+
+b. Transformation
+
+Uptake of free DNA from environment.
+
+If DNA is similar to host’s, it may integrate into the chromosome.
+
+c. Conjugation
+
+DNA transfer via pilus from donor to recipient cell.
+
+Involves F factor (fertility plasmid).
+
+Recipient becomes F⁺ and can donate DNA.
+
+d. Transfection (in eukaryotes only)
+
+Artificial DNA introduction via:
+
+Chemical methods (e.g., calcium phosphate)
+
+Physical methods (e.g., electroporation, microinjection)
+
+Transposable Elements ("Jumping Genes")
+DNA segments that move within a genome.
+
+Can carry antibiotic resistance and pathogenicity genes.
+
+If moved into plasmids, can be spread via transformation or conjugation.
+Vectors in Molecular Cloning
+Vectors are DNA molecules used to deliver foreign genetic material into host cells in molecular cloning.
+
+A vector carrying foreign DNA is called recombinant DNA.
+
+Major types of vectors include:
+
+Plasmids – circular, extra-chromosomal DNA found in bacteria.
+
+Viral vectors – modified viruses used to deliver genes.
+
+Cosmids – plasmid–phage hybrids.
+
+Artificial chromosomes – large vectors like YACs, BACs, and HACs.
+
+Expression vectors contain promoter sequences that enable expression of the inserted gene (transgene) in host cells.
+
+A vector usually consists of:
+
+Insert (transgene)
+
+Backbone – provides structural and functional elements
+
+Plasmids
+Small, circular, double-stranded DNA molecules separate from chromosomal DNA.
+
+Found in bacteria and some eukaryotes.
+
+Range in size: 2 kb to 200 kb.
+
+Replicate independently of the bacterial chromosome (due to their origin of replication).
+
+Often carry non-essential genes that offer survival advantages, such as antibiotic resistance.
+
+May contain TRA genes, which allow plasmid transfer via conjugation.
+
+Structure of a Plasmid
+Origin of replication (Ori) – A=T rich region for easy strand separation.
+
+Selectable marker site – usually antibiotic resistance genes.
+
+Promoter region – binds transcription machinery.
+
+Primer binding site – needed for amplification/sequencing.
+
+Multiple cloning site (MCS) – has restriction enzyme sites for inserting foreign DNA.
+
+Plasmids Under Stress
+Carrying a plasmid uses energy, but it helps the bacteria survive in stressful conditions (e.g., antibiotic presence).
+
+Bacteria with plasmids survive and reproduce, passing the plasmid on to others.
+
+Bacteria without plasmids are less likely to survive under such conditions.
+
+Types of Plasmids
+By TRA Gene Presence
+Conjugative plasmids – contain TRA genes; can transfer themselves between cells.
+
+Non-conjugative plasmids – lack TRA genes; cannot transfer independently.
+
+By Function
+Fertility (F) Plasmids
+
+Contain TRA genes.
+
+Help form pili for conjugation.
+
+Can replicate in host and contribute to incompatibility mechanisms.
+
+Resistance (R) Plasmids
+
+Carry antibiotic resistance genes.
+
+Protect bacteria from natural or synthetic antibiotics.
+
+Large size; usually low copy number.
+
+Col (Colicin) Plasmids
+
+Encode bacteriocins (toxic proteins).
+
+Kill closely related bacteria lacking Col plasmids.
+
+Common in E. coli.
+
+Degradative Plasmids
+
+Encode enzymes that allow digestion of unusual compounds (e.g., toluene, camphor).
+
+Help bacteria survive in unique environments.
+
+Virulence Plasmids
+
+Enable bacteria to infect hosts (plants, animals, humans).
+
+Ti plasmid in Agrobacterium tumefaciens causes crown gall disease in plants.
+
+Viral Vectors
+Genetically modified viruses (non-infectious).
+
+Carry viral promoters and the transgene.
+
+Enable high efficiency of gene delivery and expression via viral machinery.
+
+Artificial Chromosomes
+Synthetic chromosomes: YACs, BACs, HACs.
+
+Can carry very large DNA fragments (up to 300,000 base pairs).
+
+Must have:
+
+Origin of replication
+
+Centromere
+
+Telomeric sequences
+
+Why Plasmids Are Excellent Vectors
+Selectable markers (e.g., antibiotic resistance) help isolate only bacteria that have taken up the plasmid.
+
+Independent replication allows for many copies per cell.
+
+Circular structure allows easy insertion and reintegration of foreign DNA.
+
+Historical Note
+Joshua Lederberg coined the term plasmid in 1952.
+
+He won the 1958 Nobel Prize for discovering bacterial conjugation.
+
+The term was based on his work with Salmonella and bacteriophage P22. 
+Recombinant DNA Technology (rDNA)
+A method to cut and join DNA from different sources using enzymes.
+
+The new DNA is put into a vector (like a plasmid), which carries it into a host cell for replication or protein production.
+
+Restriction Enzymes (Restriction Endonucleases)
+Produced by bacteria to cut foreign DNA, protecting against viruses (bacteriophages).
+
+Discovered in the 1960s by Werner Arber, Hamilton Smith, and Daniel Nathans.
+
+Each enzyme recognizes a specific DNA sequence (called a recognition site) and cuts the DNA at or near this site.
+
+The cut is done by breaking the phosphodiester bond between nucleotides.
+
+Bacteria protect their own DNA by methylating their recognition sites with enzymes called methylases.
+
+Example:
+
+EcoRI (from E. coli):
+Cuts at:
+
+objectivec
+Copy
+Edit
+5’-GAATTC-3’  
+3’-CTTAAG-5’  
+Produces sticky ends:
+
+objectivec
+Copy
+Edit
+5’-G     AATTC-3’  
+3’-CTTAA     G-5’
+Types of Ends
+Sticky Ends
+Produced by enzymes like EcoRI or HindIII.
+
+Have single-stranded overhangs that base-pair with matching sequences.
+
+Easier to join with DNA ligase.
+
+Blunt Ends
+Produced by enzymes like SmaI:
+
+Copy
+Edit
+CCC|GGG  
+GGG|CCC  
+No overhangs; harder to join, but more versatile (no need for specific sequences).
+
+Blunt-end cloning uses T4 DNA ligase and can be faster in some cases.
+
+DNA Ligase
+Enzyme that joins DNA fragments by forming phosphodiester bonds.
+
+Essential for DNA repair, replication, and cloning.
+
+Types
+E. coli DNA ligase: uses NAD+, not efficient with blunt ends.
+
+T4 DNA ligase (from a virus): uses ATP, works with both blunt and sticky ends (commonly used in labs).
+
+Mammals: have DNA ligase I, III, IV (DNA ligase II is a breakdown product of III).
+
+Mechanism
+Enzyme is activated by AMP.
+
+AMP attaches to the 5’ end of DNA.
+
+A phosphodiester bond forms between the 3’ OH and 5’ phosphate ends.
+
+DNA Cloning
+Process of making identical copies of a DNA piece.
+
+Steps:
+Cut & Paste DNA
+
+Use restriction enzymes to cut both insert DNA and plasmid.
+
+Use DNA ligase to join them, forming recombinant DNA.
+
+Transformation
+
+Insert recombinant plasmid into bacteria (e.g., E. coli) using heat shock.
+
+The plasmid usually has an antibiotic resistance gene.
+
+Selection
+
+Grow bacteria on a plate with antibiotics.
+
+Only those with the plasmid survive and form colonies.
+
+Protein Production
+
+Bacteria make proteins from the inserted gene (e.g., insulin).
+
+Proteins are purified from bacterial cells for use.
+
+Uses of DNA Cloning
+Biopharmaceuticals: Produce proteins like insulin.
+
+Gene Therapy: Insert normal genes into patients to treat genetic disorders (e.g., cystic fibrosis).
+
+Gene Analysis: Study gene function in research labs.
+
